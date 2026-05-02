@@ -1,4 +1,4 @@
-import './App.scss';
+import './App.css';
 import { Tasklist, Searchbar } from './components';
 import { type TodoDTO } from './utils';
 import { taskApi } from './api';
