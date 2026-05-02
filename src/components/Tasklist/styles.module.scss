@@ -1,0 +1,49 @@
+.tasklist__header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+}
+
+.tasklist__title {
+  font-size: 24px;
+  line-height: 24px;
+  font-weight: 600;
+  color: grey;
+  cursor: pointer;
+
+  &.active {
+    color: var(--blue);
+    border-bottom: 2px solid var(--blue);
+  }
+}
+
+.tasklist {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  li {
+    padding: 15px;
+    border-radius: 5px;
+    background-color: white;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 15px;
+  }
+
+  h3 {
+    font-weight: 500;
+  }
+}
+
+.button__edit {
+  background-color: var(--blue);
+  background-image: url('../../assets/icons/edit.svg');
+}
+
+.button__delete {
+  background-color: var(--red);
+  background-image: url('../../assets/icons/trashcan.svg');
+}
