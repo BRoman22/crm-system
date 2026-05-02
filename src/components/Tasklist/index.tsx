@@ -1,27 +1,23 @@
 import styles from './styles.module.scss';
 import { Checkbox, Button } from '../../ui-kit';
-import { type Listitem, type status } from '../../types';
+import { type TodoDTO, type TodoInfo, FILTER_LABELS } from '../../utils';
 import { useState } from 'react';
 
 interface TasklistProps {
-  listData: Listitem[];
+  listData: TodoDTO | null;
 }
 
-type filters = 'all' | status;
-
-const FILTERS_CONFIG: { label: string; value: filters }[] = [
-  { label: 'Все', value: 'all' },
-  { label: 'в работе', value: 'active' },
-  { label: 'выполнено', value: 'done' },
-];
+type TodoKeys = keyof TodoInfo;
 
 export default function Tasklist({ listData }: TasklistProps) {
-  const [filter, setFilter] = useState<filters>('all');
-  function getLength(value: filters) {
-    return value === 'all'
-      ? listData.length
-      : listData.filter(({ status }) => status === value).length;
-  }
+  const [filter, setFilter] = useState<TodoKeys>('all');
+
+  if (!listData) return <div>Нет данных</div>;
+
+  const FILTERS_CONFIG = (Object.keys(listData.info) as TodoKeys[]).map((key) => ({
+    label: FILTER_LABELS[key],
+    value: key,
+  }));
 
   return (
     <>
@@ -32,16 +28,16 @@ export default function Tasklist({ listData }: TasklistProps) {
             className={`${styles.tasklist__title} ${filter === value ? styles.active : ''}`}
             onClick={() => setFilter(value)}
           >
-            {label} ({getLength(value)})
+            {`${label} (${listData.info[value]})`}
           </h3>
         ))}
       </div>
       <ul className={styles.tasklist}>
-        {listData
-          .filter(({ status }) => status === filter || filter === 'all')
-          .map(({ id, title, status }) => (
+        {listData.data
+          .filter(({ isDone }) => filter === 'all' || isDone === (filter === 'completed'))
+          .map(({ id, title, isDone }) => (
             <li key={id}>
-              <Checkbox title={title} checked={status === 'done'} />
+              <Checkbox title={title} checked={isDone} />
               <Button extraClassName={styles.button__edit} />
               <Button extraClassName={styles.button__delete} />
             </li>
