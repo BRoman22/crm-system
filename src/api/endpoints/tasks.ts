@@ -8,7 +8,7 @@ interface TaskApi {
   createTask: (data: Pick<TodoData, 'title' | 'isDone'>) => Promise<TodoData>;
   getTask: (id: number) => Promise<TodoData>;
   updateTask: (data: Pick<TodoData, 'id' | 'title' | 'isDone'>) => Promise<TodoData>;
-  deleteTask: (id: number) => Promise<void>;
+  deleteTask: (id: number) => Promise<boolean>;
 }
 
 const taskApi: TaskApi = {

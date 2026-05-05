@@ -1,36 +1,35 @@
-import { useState } from 'react';
 import styles from './styles.module.scss';
 
-interface CheckboxProps {
-  title?: string | React.ReactNode;
-  checked: boolean;
-  disabled?: boolean;
-  name?: string;
-  props?: React.InputHTMLAttributes<HTMLInputElement>;
+interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  isEditing?: boolean;
+  setValue: (value: string) => void;
 }
 
-export default function Checkbox({ title, disabled, name, checked, ...props }: CheckboxProps) {
-  const [isChecked, setIsChecked] = useState(checked);
-
-  const toggle = () => setIsChecked(!isChecked);
-
+export default function Checkbox({
+  value,
+  setValue,
+  name,
+  checked,
+  onChange,
+  isEditing,
+}: CheckboxProps) {
   return (
     <label className={styles.checkbox}>
       <input
         type="checkbox"
         className={styles.checkbox__input}
-        checked={isChecked}
-        onChange={toggle}
-        disabled={disabled}
-        name={name}
-        {...props}
+        onChange={onChange}
+        disabled={isEditing}
       />
-      <span className={`${styles.checkbox__check} ${isChecked ? styles.checked : ''}`} />
-      {title && (
-        <span className={`${styles.checkbox__title} ${isChecked ? styles.checked : ''}`}>
-          {title}
-        </span>
-      )}
+      <span className={`${styles.checkbox__check} ${checked ? styles.checked : ''}`} />
+      <input
+        type="text"
+        className={`${styles.checkbox__title} ${checked ? styles.checked : ''}`}
+        value={value}
+        name={name}
+        readOnly={!isEditing}
+        onChange={(e) => setValue(e.target.value)}
+      />
     </label>
   );
 }
