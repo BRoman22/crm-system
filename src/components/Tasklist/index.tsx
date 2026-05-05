@@ -25,7 +25,7 @@ export default function Tasklist({
   handleTitleChange,
 }: TasklistProps) {
   const [edit, setEdit] = useState<number | null>(null);
-  const [input, setInput] = useState<string>('');
+  const [value, setValue] = useState<string>('');
 
   if (!tasks) return <div>Нет данных</div>;
 
@@ -35,15 +35,33 @@ export default function Tasklist({
   }));
 
   function handleSaveTitle(data: Pick<TodoData, 'id' | 'title' | 'isDone'>) {
-    console.log('handleSaveEdit', data);
+    const trimmedTitle = data.title.trim();
+
+    if (!trimmedTitle) {
+      alert('Поле обязательно для заполнения');
+      return;
+    }
+
+    if (trimmedTitle.length < 2) {
+      alert(`"${trimmedTitle}" - минимальная длина 2 символа (сейчас ${trimmedTitle.length})`);
+      return;
+    }
+
+    if (trimmedTitle.length > 64) {
+      alert(
+        `"${trimmedTitle.substring(0, 20)}..." - максимальная длина 64 символа (сейчас ${trimmedTitle.length})`
+      );
+      return;
+    }
+
     handleTitleChange(data);
     setEdit(null);
-    setInput('');
+    setValue('');
   }
 
   function handleStartEdit(id: number, currentTitle: string) {
     setEdit(id);
-    setInput(currentTitle);
+    setValue(currentTitle);
   }
 
   return (
@@ -67,8 +85,8 @@ export default function Tasklist({
             return (
               <li key={id}>
                 <Checkbox
-                  value={isEditing ? input : title}
-                  setValue={setInput}
+                  value={isEditing ? value : title}
+                  setValue={setValue}
                   checked={isDone}
                   onChange={() => handleCheckboxChange({ id, title, isDone: !isDone })}
                   isEditing={isEditing}
@@ -85,7 +103,7 @@ export default function Tasklist({
                   extraClassName={styles.button__edit}
                   onClick={() =>
                     isEditing
-                      ? handleSaveTitle({ id, title: input, isDone })
+                      ? handleSaveTitle({ id, title: value, isDone })
                       : handleStartEdit(id, title)
                   }
                 />
