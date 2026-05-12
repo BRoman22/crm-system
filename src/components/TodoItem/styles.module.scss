@@ -1,0 +1,16 @@
+.tasklist__item {
+  padding: 15px;
+  border-radius: 5px;
+  background-color: white;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 15px;
+}
+
+.button__edit {
+  background-color: var(--blue);
+}
+
+.button__delete {
+  background-color: var(--red);
+}

@@ -1,9 +1,7 @@
 import styles from './styles.module.scss';
-import { Checkbox, Button } from '../../ui-kit';
+import { TodoItem } from '../index';
 import type { TodoDTO, TodoData, TodoKeys } from '../../utils';
 import { validateTitle } from '../../utils';
-import EditIcon from '../../assets/icons/edit.svg';
-import DeleteIcon from '../../assets/icons/trashcan.svg';
 import { useState } from 'react';
 
 interface TasklistProps {
@@ -45,42 +43,19 @@ export default function Tasklist({
           .map(({ id, title, isDone }) => {
             const isEditing = edit === id;
             return (
-              <li key={id}>
-                <Checkbox
-                  value={isEditing ? value : title}
-                  setValue={setValue}
-                  checked={isDone}
-                  onChange={() => handleCheckboxChange({ id, title, isDone: !isDone })}
-                  isEditing={isEditing}
-                  name="title"
-                />
-                <Button
-                  title={
-                    isEditing ? (
-                      'сохранить'
-                    ) : (
-                      <img src={EditIcon} alt="edit" width={12} height={12} />
-                    )
-                  }
-                  extraClassName={styles.button__edit}
-                  onClick={() =>
-                    isEditing
-                      ? handleSaveTitle({ id, title: value, isDone })
-                      : handleStartEdit(id, title)
-                  }
-                />
-                <Button
-                  title={
-                    isEditing ? (
-                      'отмена'
-                    ) : (
-                      <img src={DeleteIcon} alt="edit" width={12} height={12} />
-                    )
-                  }
-                  extraClassName={styles.button__delete}
-                  onClick={() => (isEditing ? setEdit(null) : handleDelete(id))}
-                />
-              </li>
+              <TodoItem
+                id={id}
+                title={title}
+                isDone={isDone}
+                isEditing={isEditing}
+                handleCheckboxChange={handleCheckboxChange}
+                handleDelete={handleDelete}
+                handleStartEdit={handleStartEdit}
+                handleSaveTitle={handleSaveTitle}
+                value={value}
+                setValue={setValue}
+                setEdit={setEdit}
+              />
             );
           })}
       </ul>

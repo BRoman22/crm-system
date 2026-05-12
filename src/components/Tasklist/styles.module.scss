@@ -3,25 +3,4 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-
-  li {
-    padding: 15px;
-    border-radius: 5px;
-    background-color: white;
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 15px;
-  }
-
-  h3 {
-    font-weight: 500;
-  }
-}
-
-.button__edit {
-  background-color: var(--blue);
-}
-
-.button__delete {
-  background-color: var(--red);
 }
