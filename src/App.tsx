@@ -27,7 +27,7 @@ function App() {
   }, []);
 
   function handleCreateTask(data: Pick<TodoData, 'title' | 'isDone'>) {
-    validateTitle(data.title);
+    if (validateTitle(data.title)) return;
 
     startTransition(() => {
       taskApi.createTask(data).then((res) => {

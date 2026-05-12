@@ -23,7 +23,7 @@ export default function Tasklist({
   const [value, setValue] = useState<string>('');
 
   function handleSaveTitle(data: Pick<TodoData, 'id' | 'title' | 'isDone'>) {
-    validateTitle(data.title);
+    if (validateTitle(data.title)) return;
 
     handleTitleChange(data);
     setEdit(null);
