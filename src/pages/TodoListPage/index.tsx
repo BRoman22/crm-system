@@ -19,89 +19,57 @@ export default function TodoListPage() {
   const [isPending, startTransition] = useTransition();
   const [filter, setFilter] = useState<TodoKeys>('all');
 
+  function fetchTasks() {
+    taskApi.getTasks().then(setTasks);
+  }
+
   useEffect(() => {
-    startTransition(() => {
-      taskApi.getTasks().then(setTasks);
-    });
+    fetchTasks();
   }, []);
 
   function handleCreateTask(data: Pick<TodoData, 'title' | 'isDone'>) {
     if (validateTitle(data.title)) return;
 
-    startTransition(() => {
-      taskApi.createTask(data).then((res) => {
-        setTasks((prev) => {
-          const updatedData = [...prev.data, res];
-          return {
-            ...prev,
-            data: updatedData,
-            info: {
-              all: updatedData.length,
-              completed: updatedData.filter((task) => task.isDone).length,
-              inWork: updatedData.filter((task) => !task.isDone).length,
-            },
-          };
-        });
-      });
+    startTransition(async () => {
+      try {
+        await taskApi.createTask(data);
+        fetchTasks();
+      } catch (error) {
+        console.error(error);
+      }
     });
   }
 
   function handleCheckboxChange(data: Pick<TodoData, 'id' | 'title' | 'isDone'>) {
-    startTransition(() => {
-      taskApi.updateTask(data).then(() =>
-        setTasks((prev) => {
-          const updatedData = prev.data.map((task) =>
-            task.id === data.id ? { ...task, title: data.title, isDone: data.isDone } : task
-          );
-
-          return {
-            ...prev,
-            data: updatedData,
-            info: {
-              all: prev.info.all,
-              completed: updatedData.filter((task) => task.isDone).length,
-              inWork: updatedData.filter((task) => !task.isDone).length,
-            },
-          };
-        })
-      );
+    startTransition(async () => {
+      try {
+        await taskApi.updateTask(data);
+        fetchTasks();
+      } catch (error) {
+        console.error(error);
+      }
     });
   }
 
   function handleTitleChange(data: Pick<TodoData, 'id' | 'title' | 'isDone'>) {
-    startTransition(() => {
-      taskApi.updateTask(data).then(() =>
-        setTasks((prev) => {
-          const updatedData = prev.data.map((task) =>
-            task.id === data.id ? { ...task, title: data.title, isDone: data.isDone } : task
-          );
-
-          return {
-            ...prev,
-            data: updatedData,
-          };
-        })
-      );
+    startTransition(async () => {
+      try {
+        await taskApi.updateTask(data);
+        fetchTasks();
+      } catch (error) {
+        console.error(error);
+      }
     });
   }
 
   function handleDeleteTask(id: number) {
-    startTransition(() => {
-      taskApi.deleteTask(id).then(() =>
-        setTasks((prev) => {
-          const updatedData = prev.data.filter((task) => task.id !== id);
-
-          return {
-            ...prev,
-            data: prev.data.filter((task) => task.id !== id),
-            info: {
-              all: updatedData.length,
-              completed: updatedData.filter((task) => task.isDone).length,
-              inWork: updatedData.filter((task) => !task.isDone).length,
-            },
-          };
-        })
-      );
+    startTransition(async () => {
+      try {
+        await taskApi.deleteTask(id);
+        fetchTasks();
+      } catch (error) {
+        console.error(error);
+      }
     });
   }
 

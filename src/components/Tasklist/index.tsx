@@ -44,6 +44,7 @@ export default function Tasklist({
             const isEditing = edit === id;
             return (
               <TodoItem
+                key={id}
                 id={id}
                 title={title}
                 isDone={isDone}

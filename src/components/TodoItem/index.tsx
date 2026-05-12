@@ -32,7 +32,7 @@ export default function TodoItem({
   handleDelete,
 }: TodoItemProps) {
   return (
-    <li key={id} className={styles.tasklist__item}>
+    <li className={styles.tasklist__item}>
       <Checkbox
         value={isEditing ? value : title}
         setValue={setValue}
