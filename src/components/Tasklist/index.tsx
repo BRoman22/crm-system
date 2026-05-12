@@ -1,6 +1,7 @@
 import styles from './styles.module.scss';
 import { Checkbox, Button } from '../../ui-kit';
-import { type TodoDTO, type TodoInfo, type TodoData, FILTER_LABELS } from '../../utils';
+import type { TodoDTO, TodoInfo, TodoData } from '../../utils';
+import { validateTitle, FILTER_LABELS } from '../../utils';
 import EditIcon from '../../assets/icons/edit.svg';
 import DeleteIcon from '../../assets/icons/trashcan.svg';
 import { useState } from 'react';
@@ -35,24 +36,7 @@ export default function Tasklist({
   }));
 
   function handleSaveTitle(data: Pick<TodoData, 'id' | 'title' | 'isDone'>) {
-    const trimmedTitle = data.title.trim();
-
-    if (!trimmedTitle) {
-      alert('Поле обязательно для заполнения');
-      return;
-    }
-
-    if (trimmedTitle.length < 2) {
-      alert(`"${trimmedTitle}" - минимальная длина 2 символа (сейчас ${trimmedTitle.length})`);
-      return;
-    }
-
-    if (trimmedTitle.length > 64) {
-      alert(
-        `"${trimmedTitle.substring(0, 20)}..." - максимальная длина 64 символа (сейчас ${trimmedTitle.length})`
-      );
-      return;
-    }
+    validateTitle(data.title);
 
     handleTitleChange(data);
     setEdit(null);

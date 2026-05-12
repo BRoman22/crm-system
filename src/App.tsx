@@ -1,6 +1,7 @@
 import './App.css';
 import { Tasklist, Searchbar } from './components';
 import type { TodoDTO, TodoData, TodoInfo } from './utils';
+import { validateTitle } from './utils';
 import { taskApi } from './api';
 import { useEffect, useState, useTransition } from 'react';
 
@@ -18,6 +19,8 @@ function App() {
   }, []);
 
   function handleCreateTask(data: Pick<TodoData, 'title' | 'isDone'>) {
+    validateTitle(data.title);
+
     startTransition(() => {
       taskApi.createTask(data).then((res) => {
         setTasks((prev) => {
