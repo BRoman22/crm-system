@@ -1,10 +1,11 @@
 import styles from './styles.module.scss';
 import { Checkbox, Button } from '../../ui-kit';
-import type { TodoDTO, TodoInfo, TodoData } from '../../utils';
-import { validateTitle, FILTER_LABELS } from '../../utils';
+import type { TodoDTO, TodoData, TodoKeys } from '../../utils';
+import { validateTitle } from '../../utils';
 import EditIcon from '../../assets/icons/edit.svg';
 import DeleteIcon from '../../assets/icons/trashcan.svg';
 import { useState } from 'react';
+import { TodoStatusFilter } from '../index';
 
 interface TasklistProps {
   tasks: TodoDTO | null;
@@ -14,8 +15,6 @@ interface TasklistProps {
   handleDelete: (id: number) => void;
   handleTitleChange: (data: Pick<TodoData, 'id' | 'title' | 'isDone'>) => void;
 }
-
-type TodoKeys = keyof TodoInfo;
 
 export default function Tasklist({
   tasks,
@@ -27,13 +26,6 @@ export default function Tasklist({
 }: TasklistProps) {
   const [edit, setEdit] = useState<number | null>(null);
   const [value, setValue] = useState<string>('');
-
-  if (!tasks) return <div>Нет данных</div>;
-
-  const FILTERS_CONFIG = (Object.keys(tasks.info) as TodoKeys[]).map((key) => ({
-    label: FILTER_LABELS[key],
-    value: key,
-  }));
 
   function handleSaveTitle(data: Pick<TodoData, 'id' | 'title' | 'isDone'>) {
     validateTitle(data.title);
@@ -50,19 +42,9 @@ export default function Tasklist({
 
   return (
     <>
-      <div className={styles.tasklist__header}>
-        {FILTERS_CONFIG.map(({ label, value }) => (
-          <h3
-            key={value}
-            className={`${styles.tasklist__title} ${filter === value ? styles.active : ''}`}
-            onClick={() => setFilter(value)}
-          >
-            {`${label} (${tasks.info[value]})`}
-          </h3>
-        ))}
-      </div>
+      <TodoStatusFilter status={tasks.info} filter={filter} setFilter={setFilter} />
       <ul className={styles.tasklist}>
-        {tasks.data
+        {tasks?.data
           .filter(({ isDone }) => filter === 'all' || isDone === (filter === 'completed'))
           .map(({ id, title, isDone }) => {
             const isEditing = edit === id;

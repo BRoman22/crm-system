@@ -18,3 +18,5 @@ export type TodoDTO = {
     totalAmount: number;
   };
 };
+
+export type TodoKeys = keyof TodoInfo;
