@@ -1,14 +1,22 @@
 import './App.css';
-import { Tasklist, Searchbar } from './components';
-import type { TodoDTO, TodoData, TodoInfo } from './utils';
+import { Searchbar, Tasklist, TodoStatusFilter } from './components';
+import type { TodoDTO, TodoData, TodoKeys } from './utils';
 import { validateTitle } from './utils';
 import { taskApi } from './api';
 import { useEffect, useState, useTransition } from 'react';
 
-type TodoKeys = keyof TodoInfo;
-
 function App() {
-  const [tasks, setTasks] = useState<TodoDTO | null>(null);
+  const [tasks, setTasks] = useState<TodoDTO>({
+    data: [],
+    info: {
+      all: 0,
+      completed: 0,
+      inWork: 0,
+    },
+    meta: {
+      totalAmount: 0,
+    },
+  });
   const [isPending, startTransition] = useTransition();
   const [filter, setFilter] = useState<TodoKeys>('all');
 
@@ -24,8 +32,6 @@ function App() {
     startTransition(() => {
       taskApi.createTask(data).then((res) => {
         setTasks((prev) => {
-          if (!prev) return null;
-
           const updatedData = [...prev.data, res];
           return {
             ...prev,
@@ -45,8 +51,6 @@ function App() {
     startTransition(() => {
       taskApi.updateTask(data).then(() =>
         setTasks((prev) => {
-          if (!prev) return null;
-
           const updatedData = prev.data.map((task) =>
             task.id === data.id ? { ...task, title: data.title, isDone: data.isDone } : task
           );
@@ -69,8 +73,6 @@ function App() {
     startTransition(() => {
       taskApi.updateTask(data).then(() =>
         setTasks((prev) => {
-          if (!prev) return null;
-
           const updatedData = prev.data.map((task) =>
             task.id === data.id ? { ...task, title: data.title, isDone: data.isDone } : task
           );
@@ -88,8 +90,6 @@ function App() {
     startTransition(() => {
       taskApi.deleteTask(id).then(() =>
         setTasks((prev) => {
-          if (!prev) return null;
-
           const updatedData = prev.data.filter((task) => task.id !== id);
 
           return {
@@ -112,14 +112,16 @@ function App() {
       {isPending ? (
         <div>Загрузка...</div>
       ) : (
-        <Tasklist
-          tasks={tasks}
-          handleCheckboxChange={handleCheckboxChange}
-          handleDelete={handleDeleteTask}
-          handleTitleChange={handleTitleChange}
-          filter={filter}
-          setFilter={setFilter}
-        />
+        <>
+          <TodoStatusFilter statuses={tasks.info} filter={filter} setFilter={setFilter} />
+          <Tasklist
+            tasks={tasks}
+            handleCheckboxChange={handleCheckboxChange}
+            handleDelete={handleDeleteTask}
+            handleTitleChange={handleTitleChange}
+            filter={filter}
+          />
+        </>
       )}
     </main>
   );

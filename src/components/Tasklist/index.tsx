@@ -5,12 +5,10 @@ import { validateTitle } from '../../utils';
 import EditIcon from '../../assets/icons/edit.svg';
 import DeleteIcon from '../../assets/icons/trashcan.svg';
 import { useState } from 'react';
-import { TodoStatusFilter } from '../index';
 
 interface TasklistProps {
-  tasks: TodoDTO | null;
+  tasks: TodoDTO;
   filter: TodoKeys;
-  setFilter: (value: TodoKeys) => void;
   handleCheckboxChange: (data: Pick<TodoData, 'id' | 'title' | 'isDone'>) => void;
   handleDelete: (id: number) => void;
   handleTitleChange: (data: Pick<TodoData, 'id' | 'title' | 'isDone'>) => void;
@@ -19,7 +17,6 @@ interface TasklistProps {
 export default function Tasklist({
   tasks,
   filter,
-  setFilter,
   handleCheckboxChange,
   handleDelete,
   handleTitleChange,
@@ -42,9 +39,8 @@ export default function Tasklist({
 
   return (
     <>
-      <TodoStatusFilter status={tasks.info} filter={filter} setFilter={setFilter} />
       <ul className={styles.tasklist}>
-        {tasks?.data
+        {tasks.data
           .filter(({ isDone }) => filter === 'all' || isDone === (filter === 'completed'))
           .map(({ id, title, isDone }) => {
             const isEditing = edit === id;

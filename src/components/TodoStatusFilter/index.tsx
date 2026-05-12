@@ -3,13 +3,13 @@ import type { TodoInfo, TodoKeys } from '../../utils';
 import { FILTER_LABELS } from '../../utils';
 
 interface TodoStatusFilterProps {
-  status: TodoInfo;
+  statuses: TodoInfo;
   filter: string;
   setFilter: (value: TodoKeys) => void;
 }
 
-export default function TodoStatusFilter({ status, filter, setFilter }: TodoStatusFilterProps) {
-  const FILTERS_CONFIG = (Object.keys(status) as TodoKeys[]).map((key) => ({
+export default function TodoStatusFilter({ statuses, filter, setFilter }: TodoStatusFilterProps) {
+  const FILTERS_CONFIG = (Object.keys(statuses) as TodoKeys[]).map((key) => ({
     label: FILTER_LABELS[key],
     value: key,
   }));
@@ -22,7 +22,7 @@ export default function TodoStatusFilter({ status, filter, setFilter }: TodoStat
           className={`${styles.statusFilter__title} ${filter === value ? styles.active : ''}`}
           onClick={() => setFilter(value)}
         >
-          {`${label} (${status[value]})`}
+          {`${label} (${statuses[value]})`}
         </h3>
       ))}
     </div>
