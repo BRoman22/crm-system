@@ -1,7 +1,6 @@
 import styles from './styles.module.scss';
 import { Checkbox, Button } from '../../ui-kit';
-import EditIcon from '../../assets/icons/edit.svg';
-import DeleteIcon from '../../assets/icons/trashcan.svg';
+import { EditIcon, DeleteIcon } from '../../assets';
 import { type TodoData } from '../../utils';
 
 interface TodoItemProps {

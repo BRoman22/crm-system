@@ -19,4 +19,4 @@ export type TodoDTO = {
   };
 };
 
-export type TodoKeys = keyof TodoInfo;
+export type TodoFilters = keyof TodoInfo;

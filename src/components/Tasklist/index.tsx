@@ -1,12 +1,12 @@
 import styles from './styles.module.scss';
 import { TodoItem } from '../index';
-import type { TodoDTO, TodoData, TodoKeys } from '../../utils';
+import type { TodoDTO, TodoData, TodoFilters } from '../../utils';
 import { validateTitle } from '../../utils';
 import { useState } from 'react';
 
 interface TasklistProps {
   tasks: TodoDTO;
-  filter: TodoKeys;
+  filter: TodoFilters;
   handleCheckboxChange: (data: Pick<TodoData, 'id' | 'title' | 'isDone'>) => void;
   handleDelete: (id: number) => void;
   handleTitleChange: (data: Pick<TodoData, 'id' | 'title' | 'isDone'>) => void;

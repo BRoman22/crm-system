@@ -1,4 +1,2 @@
-import Checkbox from './Checkbox';
-import Button from './Button';
-
-export { Checkbox, Button };
+export { default as Checkbox } from './Checkbox';
+export { default as Button } from './Button';

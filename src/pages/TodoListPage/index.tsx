@@ -1,8 +1,8 @@
 import { Searchbar, Tasklist, TodoStatusFilter } from '../../components';
-import type { TodoDTO, TodoData, TodoKeys } from '../../utils';
+import type { TodoDTO, TodoData, TodoFilters } from '../../utils';
 import { validateTitle } from '../../utils';
 import { taskApi } from '../../api';
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useState, useTransition, useCallback } from 'react';
 
 export default function TodoListPage() {
   const [tasks, setTasks] = useState<TodoDTO>({
@@ -17,15 +17,15 @@ export default function TodoListPage() {
     },
   });
   const [isPending, startTransition] = useTransition();
-  const [filter, setFilter] = useState<TodoKeys>('all');
+  const [filter, setFilter] = useState<TodoFilters>('all');
 
-  function fetchTasks() {
-    taskApi.getTasks().then(setTasks);
-  }
+  const fetchTasks = useCallback(() => {
+    taskApi.getTasks(filter).then(setTasks);
+  }, [filter]);
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
 
   function handleCreateTask(data: Pick<TodoData, 'title' | 'isDone'>) {
     if (validateTitle(data.title)) return;

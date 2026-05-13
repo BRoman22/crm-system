@@ -1,15 +1,15 @@
 import styles from './styles.module.scss';
-import type { TodoInfo, TodoKeys } from '../../utils';
+import type { TodoInfo, TodoFilters } from '../../utils';
 import { FILTER_LABELS } from '../../utils';
 
 interface TodoStatusFilterProps {
   statuses: TodoInfo;
   filter: string;
-  setFilter: (value: TodoKeys) => void;
+  setFilter: (value: TodoFilters) => void;
 }
 
 export default function TodoStatusFilter({ statuses, filter, setFilter }: TodoStatusFilterProps) {
-  const FILTERS_CONFIG = (Object.keys(statuses) as TodoKeys[]).map((key) => ({
+  const FILTERS_CONFIG = (Object.keys(statuses) as TodoFilters[]).map((key) => ({
     label: FILTER_LABELS[key],
     value: key,
   }));

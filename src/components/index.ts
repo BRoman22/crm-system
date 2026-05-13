@@ -1,6 +1,4 @@
-import Tasklist from './Tasklist';
-import Searchbar from './Searchbar';
-import TodoStatusFilter from './TodoStatusFilter';
-import TodoItem from './TodoItem';
-
-export { Tasklist, Searchbar, TodoStatusFilter, TodoItem };
+export { default as Tasklist } from './Tasklist';
+export { default as Searchbar } from './Searchbar';
+export { default as TodoStatusFilter } from './TodoStatusFilter';
+export { default as TodoItem } from './TodoItem';

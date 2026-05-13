@@ -1,7 +1,3 @@
-import taskApi from './endpoints/tasks';
-
-export { taskApi };
-
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export async function fetcher<Response, Body = unknown>(
   url: string,
@@ -26,3 +22,5 @@ export const fetchApi = {
   put: <R, B>(url: string, body?: B) => fetcher<R, B>(url, 'PUT', body),
   delete: <R = boolean>(url: string) => fetcher<R>(url, 'DELETE'),
 };
+
+export { default as taskApi } from './endpoints/tasks';
