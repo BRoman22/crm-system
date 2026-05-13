@@ -1,0 +1,23 @@
+.searchbar {
+  width: 100%;
+  padding: 15px 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+}
+
+.searchbar__input {
+  border: none;
+  padding: 0;
+  background-color: var(--main-background);
+  border-bottom: 1px solid #dadce2;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.button__add {
+  width: 120px;
+  background-color: var(--blue);
+}
