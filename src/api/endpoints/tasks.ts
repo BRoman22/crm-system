@@ -1,7 +1,8 @@
-import { type TodoDTO, type TodoData, type TodoFilters, BASE_URL, ENDPOINTS } from '../../utils';
+import { type TodoDTO, type TodoData, type TodoFilters, ENDPOINTS } from '../../utils';
 import { fetchApi } from '../index';
 
-const url = `${BASE_URL}/${ENDPOINTS.todos}`;
+const { VITE_API_URL } = import.meta.env;
+const url = `${VITE_API_URL}/${ENDPOINTS.todos}`;
 
 interface TaskApi {
   getTasks: (filter: TodoFilters) => Promise<TodoDTO>;
