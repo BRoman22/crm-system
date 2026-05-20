@@ -1,8 +1,10 @@
 import styles from './styles.module.scss';
+import { validateString } from '../../utils';
 import { useState } from 'react';
 
 interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  isEditing?: boolean;
+  isEditing: boolean;
+  value: string;
   setValue: (value: string) => void;
 }
 
@@ -15,41 +17,15 @@ export default function Checkbox({
   isEditing,
 }: CheckboxProps) {
   const [error, setError] = useState<string>('');
-
-  function validateInput(inputValue: string): boolean {
-    if (!inputValue.trim()) {
-      setError('Поле обязательно для заполнения');
-      return false;
-    }
-
-    if (inputValue.length < 2) {
-      setError(`"${inputValue}" - минимальная длина 2 символа (сейчас ${inputValue.length})`);
-      return false;
-    }
-
-    if (inputValue.length > 64) {
-      setError(
-        `"${inputValue.substring(0, 20)}..." - максимальная длина 64 символа (сейчас ${inputValue.length})`
-      );
-      return false;
-    }
-
-    setError('');
-    return true;
-  }
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newValue = e.target.value;
+    setValue(newValue);
 
-    if (isEditing) {
-      if (newValue.length <= 64) {
-        setValue(newValue);
-        validateInput(newValue);
-      } else {
-        setError(`Максимальная длина 64 символа (сейчас ${newValue.length})`);
-      }
+    const validationError = validateString(newValue);
+    if (validationError) {
+      setError(validationError);
     } else {
-      setValue(newValue);
+      setError('');
     }
   }
 

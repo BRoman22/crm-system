@@ -1,6 +1,6 @@
 import { Searchbar, Tasklist, TodoStatusFilter } from '../../components';
 import type { TodoDTO, TodoData, TodoFilters } from '../../utils';
-import { validateTitle } from '../../utils';
+import { validateString } from '../../utils';
 import { taskApi } from '../../api';
 import { useEffect, useState, useTransition, useCallback } from 'react';
 
@@ -28,7 +28,11 @@ export default function TodoListPage() {
   }, [fetchTasks]);
 
   function handleCreateTask(data: Pick<TodoData, 'title' | 'isDone'>) {
-    if (validateTitle(data.title)) return;
+    const validationError = validateString(data.title);
+
+    if (validationError) {
+      return alert(validationError);
+    }
 
     startTransition(async () => {
       try {

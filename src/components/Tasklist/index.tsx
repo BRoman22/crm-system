@@ -1,7 +1,7 @@
 import styles from './styles.module.scss';
 import { TodoItem } from '../index';
 import type { TodoDTO, TodoData, TodoFilters } from '../../utils';
-import { validateTitle } from '../../utils';
+import { validateString } from '../../utils';
 import { useState } from 'react';
 
 interface TasklistProps {
@@ -23,7 +23,11 @@ export default function Tasklist({
   const [value, setValue] = useState<string>('');
 
   function handleSaveTitle(data: Pick<TodoData, 'id' | 'title' | 'isDone'>) {
-    if (validateTitle(data.title)) return;
+    const validationError = validateString(data.title);
+
+    if (validationError) {
+      return alert(validationError);
+    }
 
     handleTitleChange(data);
     setEdit(null);

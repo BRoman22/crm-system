@@ -1,22 +1,12 @@
-export function validateTitle(title: string): boolean {
-  const trimmedTitle = title.trim();
+export function validateString(string: string): string {
+  const trimmedTitle = string.trim();
 
-  if (!trimmedTitle) {
-    alert('Поле обязательно для заполнения');
-    return true;
-  }
+  if (!trimmedTitle) return 'Поле обязательно для заполнения';
 
-  if (trimmedTitle.length < 2) {
-    alert(`"${trimmedTitle}" - минимальная длина 2 символа (сейчас ${trimmedTitle.length})`);
-    return true;
-  }
+  if (trimmedTitle.length < 2) return `Минимальная длина 2 символа (сейчас ${trimmedTitle.length})`;
 
-  if (trimmedTitle.length > 64) {
-    alert(
-      `"${trimmedTitle.substring(0, 20)}..." - максимальная длина 64 символа (сейчас ${trimmedTitle.length})`
-    );
-    return true;
-  }
+  if (trimmedTitle.length > 64)
+    return `Максимальная длина 64 символа (сейчас ${trimmedTitle.length})`;
 
-  return false;
+  return '';
 }
