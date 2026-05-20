@@ -1,4 +1,4 @@
-export function validateTitle(title: string) {
+export function validateTitle(title: string): boolean {
   const trimmedTitle = title.trim();
 
   if (!trimmedTitle) {
