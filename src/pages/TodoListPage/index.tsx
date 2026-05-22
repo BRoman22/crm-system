@@ -90,7 +90,6 @@ export default function TodoListPage() {
             handleCheckboxChange={handleCheckboxChange}
             handleDelete={handleDeleteTask}
             handleTitleChange={handleTitleChange}
-            filter={filter}
           />
         </>
       )}

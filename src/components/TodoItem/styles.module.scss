@@ -7,6 +7,31 @@
   gap: 15px;
 }
 
+.tasklist__wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.tasklist__title {
+  height: 100%;
+  margin-left: 14px;
+  line-height: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: black;
+  transition: all 150ms;
+  border: none;
+  outline: none;
+  padding: 0;
+
+  &.checked {
+    text-decoration: line-through;
+    color: grey;
+  }
+}
+
 .button__edit {
   background-color: var(--blue);
 }

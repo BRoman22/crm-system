@@ -1,56 +1,94 @@
 import styles from './styles.module.scss';
 import { Checkbox, Button } from '../../ui-kit';
 import { EditIcon, DeleteIcon } from '../../assets';
-import { type Todo } from '../../utils';
+import { type Todo, validateString } from '../../utils';
+import { useState } from 'react';
 
 interface TodoItemProps {
-  id: number;
-  title: string;
-  isDone: boolean;
-  isEditing: boolean;
-  value: string;
-  setValue: (value: string) => void;
-  setEdit: (id: number | null) => void;
+  item: {
+    id: number;
+    title: string;
+    isDone: boolean;
+  };
   handleCheckboxChange: (data: Pick<Todo, 'id' | 'title' | 'isDone'>) => void;
-  handleStartEdit: (id: number, currentTitle: string) => void;
-  handleSaveTitle: (data: Pick<Todo, 'id' | 'title' | 'isDone'>) => void;
   handleDelete: (id: number) => void;
+  handleTitleChange: (data: Pick<Todo, 'id' | 'title' | 'isDone'>) => void;
 }
 
 export default function TodoItem({
-  id,
-  title,
-  isDone,
-  isEditing,
-  value,
-  setValue,
-  setEdit,
+  item: { id, title, isDone },
   handleCheckboxChange,
-  handleStartEdit,
-  handleSaveTitle,
   handleDelete,
+  handleTitleChange,
 }: TodoItemProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState<string>(title);
+  const [error, setError] = useState<string>('');
+
+  const displayValue = isEditing ? editValue : title;
+
+  function handleSaveTitle() {
+    const validationError = validateString(editValue);
+
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    handleTitleChange({ id, title: editValue, isDone });
+    setIsEditing(false);
+    setError('');
+  }
+
+  function handleStartEdit() {
+    setIsEditing(true);
+    setEditValue(title);
+    setError('');
+  }
+
+  function handleCancelEdit() {
+    setIsEditing(false);
+    setEditValue(title);
+    setError('');
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const newValue = e.target.value;
+    setEditValue(newValue);
+
+    const validationError = validateString(newValue);
+    setError(validationError || '');
+  }
+
+  function handleCheckboxClick() {
+    if (!isEditing) {
+      handleCheckboxChange({ id, title: editValue, isDone: !isDone });
+    }
+  }
+
   return (
     <li className={styles.tasklist__item}>
-      <Checkbox
-        value={isEditing ? value : title}
-        setValue={setValue}
-        checked={isDone}
-        onChange={() => handleCheckboxChange({ id, title, isDone: !isDone })}
-        isEditing={isEditing}
-        name="title"
-      />
+      <div className={styles.tasklist__wrapper}>
+        <Checkbox checked={isDone} isEditing={isEditing} onChange={handleCheckboxClick} />
+        <input
+          type="text"
+          className={`${styles.tasklist__title} ${isDone ? styles.checked : ''}`}
+          value={displayValue}
+          name="title"
+          readOnly={!isEditing}
+          onChange={handleChange}
+        />
+        {error && isEditing && <div className={styles.errorMessage}>{error}</div>}
+      </div>
       <Button
         title={isEditing ? 'сохранить' : <img src={EditIcon} alt="edit" width={12} height={12} />}
         extraClassName={styles.button__edit}
-        onClick={() =>
-          isEditing ? handleSaveTitle({ id, title: value, isDone }) : handleStartEdit(id, title)
-        }
+        onClick={isEditing ? handleSaveTitle : handleStartEdit}
       />
       <Button
-        title={isEditing ? 'отмена' : <img src={DeleteIcon} alt="edit" width={12} height={12} />}
+        title={isEditing ? 'отмена' : <img src={DeleteIcon} alt="delete" width={12} height={12} />}
         extraClassName={styles.button__delete}
-        onClick={() => (isEditing ? setEdit(null) : handleDelete(id))}
+        onClick={isEditing ? handleCancelEdit : () => handleDelete(id)}
       />
     </li>
   );
