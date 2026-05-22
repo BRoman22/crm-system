@@ -1,7 +1,7 @@
 import styles from './styles.module.scss';
 import { Checkbox, Button } from '../../ui-kit';
 import { EditIcon, DeleteIcon } from '../../assets';
-import { type TodoData } from '../../utils';
+import { type Todo } from '../../utils';
 
 interface TodoItemProps {
   id: number;
@@ -11,9 +11,9 @@ interface TodoItemProps {
   value: string;
   setValue: (value: string) => void;
   setEdit: (id: number | null) => void;
-  handleCheckboxChange: (data: Pick<TodoData, 'id' | 'title' | 'isDone'>) => void;
+  handleCheckboxChange: (data: Pick<Todo, 'id' | 'title' | 'isDone'>) => void;
   handleStartEdit: (id: number, currentTitle: string) => void;
-  handleSaveTitle: (data: Pick<TodoData, 'id' | 'title' | 'isDone'>) => void;
+  handleSaveTitle: (data: Pick<Todo, 'id' | 'title' | 'isDone'>) => void;
   handleDelete: (id: number) => void;
 }
 

@@ -1,10 +1,10 @@
 import styles from './styles.module.scss';
 import { Button } from '../../ui-kit';
-import { type TodoData } from '../../utils';
+import { type Todo } from '../../utils';
 
 interface SearchbarProps {
   name: string;
-  createTask: (data: Pick<TodoData, 'title' | 'isDone'>) => void;
+  createTask: (data: Pick<Todo, 'title' | 'isDone'>) => void;
 }
 
 export default function Searchbar({ name, createTask }: SearchbarProps) {

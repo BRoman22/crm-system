@@ -1,11 +1,11 @@
 import { Searchbar, Tasklist, TodoStatusFilter } from '../../components';
-import type { TodoDTO, TodoData, TodoFilters } from '../../utils';
+import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../utils';
 import { validateString } from '../../utils';
 import { taskApi } from '../../api';
 import { useEffect, useState, useTransition, useCallback } from 'react';
 
 export default function TodoListPage() {
-  const [tasks, setTasks] = useState<TodoDTO>({
+  const [tasks, setTasks] = useState<MetaResponse<Todo, TodoInfo>>({
     data: [],
     info: {
       all: 0,
@@ -17,7 +17,7 @@ export default function TodoListPage() {
     },
   });
   const [isPending, startTransition] = useTransition();
-  const [filter, setFilter] = useState<TodoFilters>('all');
+  const [filter, setFilter] = useState<TodoInfoFilters>('all');
 
   const fetchTasks = useCallback(() => {
     taskApi.getTasks(filter).then(setTasks);
@@ -27,7 +27,7 @@ export default function TodoListPage() {
     fetchTasks();
   }, [fetchTasks]);
 
-  function handleCreateTask(data: Pick<TodoData, 'title' | 'isDone'>) {
+  function handleCreateTask(data: Pick<Todo, 'title' | 'isDone'>) {
     const validationError = validateString(data.title);
 
     if (validationError) {
@@ -44,7 +44,7 @@ export default function TodoListPage() {
     });
   }
 
-  function handleCheckboxChange(data: Pick<TodoData, 'id' | 'title' | 'isDone'>) {
+  function handleCheckboxChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
     startTransition(async () => {
       try {
         await taskApi.updateTask(data);
@@ -55,7 +55,7 @@ export default function TodoListPage() {
     });
   }
 
-  function handleTitleChange(data: Pick<TodoData, 'id' | 'title' | 'isDone'>) {
+  function handleTitleChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
     startTransition(async () => {
       try {
         await taskApi.updateTask(data);
