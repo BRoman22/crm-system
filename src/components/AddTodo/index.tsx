@@ -1,14 +1,15 @@
 import styles from './styles.module.scss';
 import { Button } from '../../ui-kit';
-import type { Todo } from '../../utils';
-import { validateString } from '../../utils';
+import { type Todo, validateString } from '../../utils';
 import { taskApi } from '../../api';
+import { useState } from 'react';
 
 interface Props {
   fetchTasks: () => void;
 }
 
 export default function AddTodo({ fetchTasks }: Props) {
+  const [title, setTitle] = useState<string>('');
   async function handleCreateTask(data: Pick<Todo, 'title' | 'isDone'>) {
     const validationError = validateString(data.title);
 
@@ -19,6 +20,7 @@ export default function AddTodo({ fetchTasks }: Props) {
     try {
       await taskApi.createTask(data);
       fetchTasks();
+      setTitle('');
     } catch (error) {
       console.error(error);
     }
@@ -26,8 +28,8 @@ export default function AddTodo({ fetchTasks }: Props) {
 
   function handleFormSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const title = formData.get('name') as string;
+    // const formData = new FormData(e.currentTarget);
+    // const title = formData.get('name') as string;
     handleCreateTask({ title, isDone: false });
     e.currentTarget.reset();
   }
@@ -39,6 +41,8 @@ export default function AddTodo({ fetchTasks }: Props) {
         autoComplete="off"
         name={'name'}
         placeholder="Task To Be Done..."
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
       />
       <Button title="Add" color="primary" type="submit" />
     </form>
