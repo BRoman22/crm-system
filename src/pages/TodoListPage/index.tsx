@@ -29,7 +29,7 @@ export default function TodoListPage() {
     <main className="app">
       <AddTodo fetchTasks={fetchTasks} />
       <TodoStatusFilter statuses={tasks.info} filter={filter} setFilter={setFilter} />
-      <Tasklist tasks={tasks} fetchTasks={fetchTasks} />
+      <Tasklist tasks={tasks.data} fetchTasks={fetchTasks} />
     </main>
   );
 }
