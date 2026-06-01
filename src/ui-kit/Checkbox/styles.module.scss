@@ -23,8 +23,8 @@
   border: 1px solid grey;
 
   &.checked {
-    border-color: var(--blue);
-    background-color: var(--blue);
+    border-color: var(--primary);
+    background-color: var(--primary);
     background-image: url('../../assets/icons/checked.svg');
     background-repeat: no-repeat;
     background-position: center;

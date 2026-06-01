@@ -1,5 +1,5 @@
 import styles from './styles.module.scss';
-import { Checkbox, IconButton } from '../../ui-kit';
+import { Checkbox, IconButton, Button } from '../../ui-kit';
 import { EditIcon, DeleteIcon } from '../../assets';
 import { type Todo, validateString } from '../../utils';
 import { useState } from 'react';
@@ -97,20 +97,24 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: To
         />
         {error && isEditing && <div className={styles.errorMessage}>{error}</div>}
       </div>
-      <IconButton
-        children={
-          isEditing ? 'сохранить' : <img src={EditIcon} alt="edit" width={12} height={12} />
-        }
-        extraClassName={styles.button__edit}
-        onClick={isEditing ? handleSaveTitle : handleStartEdit}
-      />
-      <IconButton
-        children={
-          isEditing ? 'отмена' : <img src={DeleteIcon} alt="delete" width={12} height={12} />
-        }
-        extraClassName={styles.button__delete}
-        onClick={isEditing ? handleCancelEdit : () => handleDeleteTask(id)}
-      />
+      {isEditing ? (
+        <Button title="сохранить" color="primary" onClick={handleSaveTitle} />
+      ) : (
+        <IconButton
+          children={<img src={EditIcon} alt="edit" width={12} height={12} />}
+          color="primary"
+          onClick={handleStartEdit}
+        />
+      )}
+      {isEditing ? (
+        <Button title="отмена" color="secondary" onClick={handleCancelEdit} />
+      ) : (
+        <IconButton
+          children={<img src={DeleteIcon} alt="delete" width={12} height={12} />}
+          color="secondary"
+          onClick={() => handleDeleteTask(id)}
+        />
+      )}
     </li>
   );
 }

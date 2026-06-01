@@ -13,7 +13,7 @@
   cursor: pointer;
 
   &.active {
-    color: var(--blue);
-    border-bottom: 2px solid var(--blue);
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
   }
 }

@@ -9,3 +9,11 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+
+.button__primary {
+  background-color: var(--primary);
+}
+
+.button__secondary {
+  background-color: var(--secondary);
+}

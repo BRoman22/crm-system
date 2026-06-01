@@ -41,7 +41,7 @@ export default function AddTodo({ name, fetchTasks }: Props) {
         name={name}
         placeholder="Task To Be Done..."
       />
-      <Button title="Add" extraClassName={styles.button__add} type="submit" />
+      <Button title="Add" color="primary" type="submit" />
     </form>
   );
 }
