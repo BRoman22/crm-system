@@ -3,29 +3,46 @@ import { Checkbox, IconButton } from '../../ui-kit';
 import { EditIcon, DeleteIcon } from '../../assets';
 import { type Todo, validateString } from '../../utils';
 import { useState } from 'react';
+import { taskApi } from '../../api';
 
 interface TodoItemProps {
-  item: {
-    id: number;
-    title: string;
-    isDone: boolean;
-  };
-  handleCheckboxChange: (data: Pick<Todo, 'id' | 'title' | 'isDone'>) => void;
-  handleDelete: (id: number) => void;
-  handleTitleChange: (data: Pick<Todo, 'id' | 'title' | 'isDone'>) => void;
+  item: Todo;
+  fetchTasks: () => void;
 }
 
-export default function TodoItem({
-  item: { id, title, isDone },
-  handleCheckboxChange,
-  handleDelete,
-  handleTitleChange,
-}: TodoItemProps) {
+export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState<string>(title);
   const [error, setError] = useState<string>('');
 
   const displayValue = isEditing ? editValue : title;
+
+  async function handleCheckboxChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
+    try {
+      await taskApi.updateTask(data);
+      fetchTasks();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function handleTitleChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
+    try {
+      await taskApi.updateTask(data);
+      fetchTasks();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function handleDeleteTask(id: number) {
+    try {
+      await taskApi.deleteTask(id);
+      fetchTasks();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   function handleSaveTitle() {
     const validationError = validateString(editValue);
@@ -92,7 +109,7 @@ export default function TodoItem({
           isEditing ? 'отмена' : <img src={DeleteIcon} alt="delete" width={12} height={12} />
         }
         extraClassName={styles.button__delete}
-        onClick={isEditing ? handleCancelEdit : () => handleDelete(id)}
+        onClick={isEditing ? handleCancelEdit : () => handleDeleteTask(id)}
       />
     </li>
   );

@@ -1,10 +1,9 @@
 import { AddTodo, Tasklist, TodoStatusFilter } from '../../components';
 import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../utils';
 import { taskApi } from '../../api';
-import { useEffect, useState, useTransition, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 export default function TodoListPage() {
-  const [isPending, startTransition] = useTransition();
   const [filter, setFilter] = useState<TodoInfoFilters>('all');
   const [tasks, setTasks] = useState<MetaResponse<Todo, TodoInfo>>({
     data: [],
@@ -26,55 +25,11 @@ export default function TodoListPage() {
     fetchTasks();
   }, [fetchTasks]);
 
-  function handleCheckboxChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
-    startTransition(async () => {
-      try {
-        await taskApi.updateTask(data);
-        fetchTasks();
-      } catch (error) {
-        console.error(error);
-      }
-    });
-  }
-
-  function handleTitleChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
-    startTransition(async () => {
-      try {
-        await taskApi.updateTask(data);
-        fetchTasks();
-      } catch (error) {
-        console.error(error);
-      }
-    });
-  }
-
-  function handleDeleteTask(id: number) {
-    startTransition(async () => {
-      try {
-        await taskApi.deleteTask(id);
-        fetchTasks();
-      } catch (error) {
-        console.error(error);
-      }
-    });
-  }
-
   return (
     <main className="app">
       <AddTodo name={'title'} fetchTasks={fetchTasks} />
-      {isPending ? (
-        <div>Загрузка...</div>
-      ) : (
-        <>
-          <TodoStatusFilter statuses={tasks.info} filter={filter} setFilter={setFilter} />
-          <Tasklist
-            tasks={tasks}
-            handleCheckboxChange={handleCheckboxChange}
-            handleDelete={handleDeleteTask}
-            handleTitleChange={handleTitleChange}
-          />
-        </>
-      )}
+      <TodoStatusFilter statuses={tasks.info} filter={filter} setFilter={setFilter} />
+      <Tasklist tasks={tasks} fetchTasks={fetchTasks} />
     </main>
   );
 }
