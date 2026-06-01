@@ -1,7 +1,7 @@
 export const FILTER_LABELS = {
   all: 'Все',
-  completed: 'выполнено',
-  inWork: 'в работе',
+  completed: 'Выполнено',
+  inWork: 'В работе',
 };
 
 export const ENDPOINTS = {
