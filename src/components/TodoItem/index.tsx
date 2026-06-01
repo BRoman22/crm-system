@@ -1,5 +1,5 @@
 import styles from './styles.module.scss';
-import { Checkbox, Button } from '../../ui-kit';
+import { Checkbox, IconButton } from '../../ui-kit';
 import { EditIcon, DeleteIcon } from '../../assets';
 import { type Todo, validateString } from '../../utils';
 import { useState } from 'react';
@@ -80,13 +80,17 @@ export default function TodoItem({
         />
         {error && isEditing && <div className={styles.errorMessage}>{error}</div>}
       </div>
-      <Button
-        title={isEditing ? 'сохранить' : <img src={EditIcon} alt="edit" width={12} height={12} />}
+      <IconButton
+        children={
+          isEditing ? 'сохранить' : <img src={EditIcon} alt="edit" width={12} height={12} />
+        }
         extraClassName={styles.button__edit}
         onClick={isEditing ? handleSaveTitle : handleStartEdit}
       />
-      <Button
-        title={isEditing ? 'отмена' : <img src={DeleteIcon} alt="delete" width={12} height={12} />}
+      <IconButton
+        children={
+          isEditing ? 'отмена' : <img src={DeleteIcon} alt="delete" width={12} height={12} />
+        }
         extraClassName={styles.button__delete}
         onClick={isEditing ? handleCancelEdit : () => handleDelete(id)}
       />

@@ -3,11 +3,12 @@ import styles from './styles.module.scss';
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   extraClassName?: string;
   props?: React.ButtonHTMLAttributes<HTMLButtonElement>;
+  children?: React.ReactNode;
 }
-export default function Button({ title, extraClassName, ...props }: ButtonProps) {
+export default function IconButton({ extraClassName, children, ...props }: ButtonProps) {
   return (
     <button className={`${styles.button} ${extraClassName}`} {...props}>
-      {title}
+      {children}
     </button>
   );
 }
