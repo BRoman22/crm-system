@@ -83,9 +83,14 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: To
     }
   }
 
+  function onSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+    e.preventDefault();
+    handleSaveTitle();
+  }
+
   return (
     <li className={styles.tasklist__item}>
-      <div className={styles.tasklist__wrapper}>
+      <form className={styles.tasklist__wrapper} onSubmit={onSubmit}>
         <Checkbox checked={isDone} isEditing={isEditing} onChange={handleCheckboxClick} />
         <input
           type="text"
@@ -96,7 +101,7 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: To
           onChange={handleChange}
         />
         {error && isEditing && <div className={styles.errorMessage}>{error}</div>}
-      </div>
+      </form>
       {isEditing ? (
         <Button title="сохранить" color="primary" onClick={handleSaveTitle} />
       ) : (
