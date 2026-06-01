@@ -1,10 +1,11 @@
 import { AddTodo, Tasklist, TodoStatusFilter } from '../../components';
 import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../utils';
-import { validateString } from '../../utils';
 import { taskApi } from '../../api';
 import { useEffect, useState, useTransition, useCallback } from 'react';
 
 export default function TodoListPage() {
+  const [isPending, startTransition] = useTransition();
+  const [filter, setFilter] = useState<TodoInfoFilters>('all');
   const [tasks, setTasks] = useState<MetaResponse<Todo, TodoInfo>>({
     data: [],
     info: {
@@ -16,8 +17,6 @@ export default function TodoListPage() {
       totalAmount: 0,
     },
   });
-  const [isPending, startTransition] = useTransition();
-  const [filter, setFilter] = useState<TodoInfoFilters>('all');
 
   const fetchTasks = useCallback(() => {
     taskApi.getTasks(filter).then(setTasks);
@@ -26,23 +25,6 @@ export default function TodoListPage() {
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
-
-  function handleCreateTask(data: Pick<Todo, 'title' | 'isDone'>) {
-    const validationError = validateString(data.title);
-
-    if (validationError) {
-      return alert(validationError);
-    }
-
-    startTransition(async () => {
-      try {
-        await taskApi.createTask(data);
-        fetchTasks();
-      } catch (error) {
-        console.error(error);
-      }
-    });
-  }
 
   function handleCheckboxChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
     startTransition(async () => {
@@ -79,7 +61,7 @@ export default function TodoListPage() {
 
   return (
     <main className="app">
-      <AddTodo name={'title'} createTask={handleCreateTask} />
+      <AddTodo name={'title'} fetchTasks={fetchTasks} />
       {isPending ? (
         <div>Загрузка...</div>
       ) : (

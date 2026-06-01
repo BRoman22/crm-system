@@ -1,18 +1,35 @@
 import styles from './styles.module.scss';
 import { Button } from '../../ui-kit';
-import { type Todo } from '../../utils';
+import type { Todo } from '../../utils';
+import { validateString } from '../../utils';
+import { taskApi } from '../../api';
 
 interface Props {
   name: string;
-  createTask: (data: Pick<Todo, 'title' | 'isDone'>) => void;
+  fetchTasks: () => void;
 }
 
-export default function AddTodo({ name, createTask }: Props) {
+export default function AddTodo({ name, fetchTasks }: Props) {
+  async function handleCreateTask(data: Pick<Todo, 'title' | 'isDone'>) {
+    const validationError = validateString(data.title);
+
+    if (validationError) {
+      return alert(validationError);
+    }
+
+    try {
+      await taskApi.createTask(data);
+      fetchTasks();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   function handleFormSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const title = formData.get(name) as string;
-    createTask({ title, isDone: false });
+    handleCreateTask({ title, isDone: false });
     e.currentTarget.reset();
   }
 
