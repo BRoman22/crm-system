@@ -1,4 +1,4 @@
-.searchbar {
+.addTodo {
   width: 100%;
   padding: 15px 0;
   display: grid;
@@ -6,7 +6,7 @@
   gap: 20px;
 }
 
-.searchbar__input {
+.addTodo__input {
   border: none;
   padding: 0;
   background-color: var(--main-background);

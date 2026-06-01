@@ -1,4 +1,4 @@
-import { Searchbar, Tasklist, TodoStatusFilter } from '../../components';
+import { AddTodo, Tasklist, TodoStatusFilter } from '../../components';
 import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../utils';
 import { validateString } from '../../utils';
 import { taskApi } from '../../api';
@@ -79,7 +79,7 @@ export default function TodoListPage() {
 
   return (
     <main className="app">
-      <Searchbar name={'title'} createTask={handleCreateTask} />
+      <AddTodo name={'title'} createTask={handleCreateTask} />
       {isPending ? (
         <div>Загрузка...</div>
       ) : (
