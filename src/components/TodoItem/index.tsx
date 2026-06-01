@@ -5,12 +5,12 @@ import { type Todo, validateString } from '../../utils';
 import { useState } from 'react';
 import { taskApi } from '../../api';
 
-interface TodoItemProps {
+interface Props {
   item: Todo;
   fetchTasks: () => void;
 }
 
-export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: TodoItemProps) {
+export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState<string>(title);
   const [error, setError] = useState<string>('');

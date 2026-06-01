@@ -1,10 +1,10 @@
 import styles from './styles.module.scss';
 
-interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   isEditing: boolean;
 }
 
-export default function Checkbox({ checked, onChange, isEditing }: CheckboxProps) {
+export default function Checkbox({ checked, onChange, isEditing }: Props) {
   return (
     <label className={styles.checkbox}>
       <input

@@ -1,11 +1,11 @@
 import styles from './styles.module.scss';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   props?: React.ButtonHTMLAttributes<HTMLButtonElement>;
   children?: React.ReactNode;
   color: 'primary' | 'secondary';
 }
-export default function IconButton({ children, color = 'primary', ...props }: ButtonProps) {
+export default function IconButton({ children, color = 'primary', ...props }: Props) {
   return (
     <button className={`${styles.button} ${styles[`button__${color}`]}`} {...props}>
       {children}
