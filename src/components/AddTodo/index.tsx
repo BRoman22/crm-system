@@ -5,11 +5,10 @@ import { validateString } from '../../utils';
 import { taskApi } from '../../api';
 
 interface Props {
-  name: string;
   fetchTasks: () => void;
 }
 
-export default function AddTodo({ name, fetchTasks }: Props) {
+export default function AddTodo({ fetchTasks }: Props) {
   async function handleCreateTask(data: Pick<Todo, 'title' | 'isDone'>) {
     const validationError = validateString(data.title);
 
@@ -28,7 +27,7 @@ export default function AddTodo({ name, fetchTasks }: Props) {
   function handleFormSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const title = formData.get(name) as string;
+    const title = formData.get('name') as string;
     handleCreateTask({ title, isDone: false });
     e.currentTarget.reset();
   }
@@ -38,7 +37,7 @@ export default function AddTodo({ name, fetchTasks }: Props) {
       <input
         className={styles.addTodo__input}
         autoComplete="off"
-        name={name}
+        name={'name'}
         placeholder="Task To Be Done..."
       />
       <Button title="Add" color="primary" type="submit" />

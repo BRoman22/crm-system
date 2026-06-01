@@ -27,7 +27,7 @@ export default function TodoListPage() {
 
   return (
     <main className="app">
-      <AddTodo name={'title'} fetchTasks={fetchTasks} />
+      <AddTodo fetchTasks={fetchTasks} />
       <TodoStatusFilter statuses={tasks.info} filter={filter} setFilter={setFilter} />
       <Tasklist tasks={tasks} fetchTasks={fetchTasks} />
     </main>
