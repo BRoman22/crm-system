@@ -11,6 +11,7 @@ interface Props {
 
 export default function AddTodo({ fetchTasks }: Props) {
   const [title, setTitle] = useState<string>('');
+
   async function handleCreateTask(data: Pick<Todo, 'title' | 'isDone'>) {
     const validationError = validateString(data.title);
 
