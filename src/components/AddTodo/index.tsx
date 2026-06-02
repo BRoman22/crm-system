@@ -2,7 +2,7 @@ import styles from './styles.module.scss';
 import { Button } from '../../ui-kit';
 import type { Todo } from '../../types';
 import { validateTitle } from '../../utils/validateTitle';
-import { createTask } from '../../api/endpoints/tasks';
+import { createTodo } from '../../api/endpoints/todos';
 import { useState } from 'react';
 
 interface Props {
@@ -14,7 +14,7 @@ export default function AddTodo({ fetchTasks }: Props) {
 
   async function handleCreateTask(data: Pick<Todo, 'title' | 'isDone'>) {
     try {
-      await createTask(data);
+      await createTodo(data);
       fetchTasks();
       setTitle('');
     } catch (error) {

@@ -7,9 +7,9 @@ interface Props {
   fetchTasks: () => void;
 }
 
-export default function Tasklist({ tasks, fetchTasks }: Props) {
+export default function TodoList({ tasks, fetchTasks }: Props) {
   return (
-    <ul className={styles.tasklist}>
+    <ul className={styles.todolist}>
       {tasks.map((item) => {
         return <TodoItem key={item.id} item={item} fetchTasks={fetchTasks} />;
       })}

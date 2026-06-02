@@ -1,6 +1,6 @@
-import { AddTodo, Tasklist, TodoStatusFilter } from '../../components';
+import { AddTodo, Todolist, TodoStatusFilter } from '../../components';
 import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../types';
-import { getTasks } from '../../api/endpoints/tasks';
+import { getTodos } from '../../api/endpoints/todos';
 import { useEffect, useState, useCallback } from 'react';
 
 export default function TodoListPage() {
@@ -18,7 +18,7 @@ export default function TodoListPage() {
   });
 
   const fetchTasks = useCallback(() => {
-    getTasks(filter).then(setTasks);
+    getTodos(filter).then(setTasks);
   }, [filter]);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function TodoListPage() {
     <main className="app">
       <AddTodo fetchTasks={fetchTasks} />
       <TodoStatusFilter statuses={tasks.info} filter={filter} setFilter={setFilter} />
-      <Tasklist tasks={tasks.data} fetchTasks={fetchTasks} />
+      <Todolist tasks={tasks.data} fetchTasks={fetchTasks} />
     </main>
   );
 }
