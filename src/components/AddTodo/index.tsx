@@ -19,7 +19,6 @@ export default function AddTodo({ fetchTasks }: Props) {
       setTitle('');
     } catch (error) {
       console.error(error);
-      alert('Ошибка при создании задачи');
     }
   }
 
