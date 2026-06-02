@@ -2,7 +2,7 @@ import styles from './styles.module.scss';
 import { Button } from '../../ui-kit';
 import type { Todo } from '../../types';
 import { validateString } from '../../utils/validateString';
-import { taskApi } from '../../api';
+import { createTask } from '../../api/endpoints/tasks';
 import { useState } from 'react';
 
 interface Props {
@@ -19,7 +19,7 @@ export default function AddTodo({ fetchTasks }: Props) {
     }
 
     try {
-      await taskApi.createTask(data);
+      await createTask(data);
       fetchTasks();
       setTitle('');
     } catch (error) {

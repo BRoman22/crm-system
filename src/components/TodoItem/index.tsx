@@ -4,7 +4,7 @@ import { EditIcon, DeleteIcon } from '../../assets';
 import type { Todo } from '../../types';
 import { validateString } from '../../utils/validateString';
 import { useState } from 'react';
-import { taskApi } from '../../api';
+import { deleteTask, updateTask } from '../../api/endpoints/tasks';
 
 interface Props {
   item: Todo;
@@ -20,7 +20,7 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Pr
 
   async function handleCheckboxChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
     try {
-      await taskApi.updateTask(data);
+      await updateTask(data);
       fetchTasks();
     } catch (error) {
       console.error(error);
@@ -29,7 +29,7 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Pr
 
   async function handleTitleChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
     try {
-      await taskApi.updateTask(data);
+      await updateTask(data);
       fetchTasks();
     } catch (error) {
       console.error(error);
@@ -38,7 +38,7 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Pr
 
   async function handleDeleteTask(id: number) {
     try {
-      await taskApi.deleteTask(id);
+      await deleteTask(id);
       fetchTasks();
     } catch (error) {
       console.error(error);

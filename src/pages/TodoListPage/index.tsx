@@ -1,6 +1,6 @@
 import { AddTodo, Tasklist, TodoStatusFilter } from '../../components';
 import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../types';
-import { taskApi } from '../../api';
+import { getTasks } from '../../api/endpoints/tasks';
 import { useEffect, useState, useCallback } from 'react';
 
 export default function TodoListPage() {
@@ -18,7 +18,7 @@ export default function TodoListPage() {
   });
 
   const fetchTasks = useCallback(() => {
-    taskApi.getTasks(filter).then(setTasks);
+    getTasks(filter).then(setTasks);
   }, [filter]);
 
   useEffect(() => {
