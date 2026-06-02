@@ -13,27 +13,27 @@ export default function AddTodo({ fetchTasks }: Props) {
   const [title, setTitle] = useState<string>('');
 
   async function handleCreateTask(data: Pick<Todo, 'title' | 'isDone'>) {
-    const validationError = validateString(data.title);
-
-    if (validationError) {
-      return alert(validationError);
-    }
-
     try {
       await createTask(data);
       fetchTasks();
       setTitle('');
     } catch (error) {
       console.error(error);
+      alert('Ошибка при создании задачи');
     }
   }
 
   function handleFormSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    // const formData = new FormData(e.currentTarget);
-    // const title = formData.get('name') as string;
+
+    const validationError = validateString(title);
+
+    if (validationError) {
+      alert(validationError);
+      return;
+    }
+
     handleCreateTask({ title, isDone: false });
-    e.currentTarget.reset();
   }
 
   return (
