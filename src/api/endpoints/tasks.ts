@@ -8,25 +8,20 @@ const taskApi = {
   getTasks: (filter: TodoInfoFilters = 'all'): Promise<MetaResponse<Todo, TodoInfo>> =>
     fetch(`${url}?filter=${filter}`).then((res) => res.json()),
 
-  createTask: ({
-    title,
-    isDone,
-  }: Pick<Todo, 'title' | 'isDone'>): Promise<MetaResponse<Todo, TodoInfo>> =>
+  createTask: (body: Pick<Todo, 'title' | 'isDone'>): Promise<MetaResponse<Todo, TodoInfo>> =>
     fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, isDone }),
+      body: JSON.stringify(body),
     }).then((res) => res.json()),
 
-  updateTask: ({
-    id,
-    title,
-    isDone,
-  }: Pick<Todo, 'id' | 'title' | 'isDone'>): Promise<MetaResponse<Todo, TodoInfo>> =>
-    fetch(`${url}/${id}`, {
+  updateTask: (
+    body: Pick<Todo, 'id' | 'title' | 'isDone'>
+  ): Promise<MetaResponse<Todo, TodoInfo>> =>
+    fetch(`${url}/${body.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, isDone }),
+      body: JSON.stringify(body),
     }).then((res) => res.json()),
 
   deleteTask: (id: number): Promise<boolean> =>
