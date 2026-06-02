@@ -1,6 +1,7 @@
 import styles from './styles.module.scss';
 import { Button } from '../../ui-kit';
-import { type Todo, validateString } from '../../utils';
+import type { Todo } from '../../types';
+import { validateString } from '../../utils/validateString';
 import { taskApi } from '../../api';
 import { useState } from 'react';
 

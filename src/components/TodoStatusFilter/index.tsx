@@ -1,6 +1,6 @@
 import styles from './styles.module.scss';
-import type { TodoInfo, TodoInfoFilters } from '../../utils';
-import { FILTER_LABELS } from '../../utils';
+import type { TodoInfo, TodoInfoFilters } from '../../types';
+import { FILTER_LABELS } from '../../constans';
 
 interface Props {
   statuses: TodoInfo;

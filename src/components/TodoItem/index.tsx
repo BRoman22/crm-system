@@ -1,7 +1,8 @@
 import styles from './styles.module.scss';
 import { Checkbox, IconButton, Button } from '../../ui-kit';
 import { EditIcon, DeleteIcon } from '../../assets';
-import { type Todo, validateString } from '../../utils';
+import type { Todo } from '../../types';
+import { validateString } from '../../utils/validateString';
 import { useState } from 'react';
 import { taskApi } from '../../api';
 

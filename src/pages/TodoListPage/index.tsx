@@ -1,5 +1,5 @@
 import { AddTodo, Tasklist, TodoStatusFilter } from '../../components';
-import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../utils';
+import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../types';
 import { taskApi } from '../../api';
 import { useEffect, useState, useCallback } from 'react';
 

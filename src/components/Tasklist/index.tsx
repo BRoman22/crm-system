@@ -1,6 +1,6 @@
 import styles from './styles.module.scss';
 import { TodoItem } from '../index';
-import type { Todo } from '../../utils';
+import type { Todo } from '../../types';
 
 interface Props {
   tasks: Todo[];

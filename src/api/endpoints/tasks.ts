@@ -1,10 +1,5 @@
-import {
-  type MetaResponse,
-  type Todo,
-  type TodoInfo,
-  type TodoInfoFilters,
-  ENDPOINTS,
-} from '../../utils';
+import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../types';
+import { ENDPOINTS } from '../../constans';
 
 const { VITE_API_URL } = import.meta.env;
 const url = `${VITE_API_URL}/${ENDPOINTS.todos}`;
