@@ -1,4 +1,4 @@
-export function validateString(string: string): string {
+export function validateTitle(string: string): string {
   const trimmedTitle = string.trim();
 
   if (!trimmedTitle) return 'Поле обязательно для заполнения';

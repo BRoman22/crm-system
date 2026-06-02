@@ -2,7 +2,7 @@ import styles from './styles.module.scss';
 import { Checkbox, IconButton, Button } from '../../ui-kit';
 import { EditIcon, DeleteIcon } from '../../assets';
 import type { Todo } from '../../types';
-import { validateString } from '../../utils/validateString';
+import { validateTitle } from '../../utils/validateTitle';
 import { useState } from 'react';
 import { deleteTask, updateTask } from '../../api/endpoints/tasks';
 
@@ -46,7 +46,7 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Pr
   }
 
   function handleSaveTitle() {
-    const validationError = validateString(editValue);
+    const validationError = validateTitle(editValue);
 
     if (validationError) {
       setError(validationError);
@@ -74,7 +74,7 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Pr
     const newValue = e.target.value;
     setEditValue(newValue);
 
-    const validationError = validateString(newValue);
+    const validationError = validateTitle(newValue);
     setError(validationError || '');
   }
 

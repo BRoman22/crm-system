@@ -1,7 +1,7 @@
 import styles from './styles.module.scss';
 import { Button } from '../../ui-kit';
 import type { Todo } from '../../types';
-import { validateString } from '../../utils/validateString';
+import { validateTitle } from '../../utils/validateTitle';
 import { createTask } from '../../api/endpoints/tasks';
 import { useState } from 'react';
 
@@ -25,7 +25,7 @@ export default function AddTodo({ fetchTasks }: Props) {
   function handleFormSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const validationError = validateString(title);
+    const validationError = validateTitle(title);
 
     if (validationError) {
       alert(validationError);
