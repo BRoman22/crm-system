@@ -9,22 +9,23 @@ export function getTodos(filter: TodoInfoFilters = 'all'): Promise<MetaResponse<
 }
 
 export function createTodo(
-  body: Pick<Todo, 'title' | 'isDone'>
+  data: Pick<Todo, 'title' | 'isDone'>
 ): Promise<MetaResponse<Todo, TodoInfo>> {
   return fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify(data),
   }).then((res) => res.json());
 }
 
 export function updateTodo(
-  body: Pick<Todo, 'id' | 'title' | 'isDone'>
+  id: number,
+  data: Pick<Todo, 'title' | 'isDone'>
 ): Promise<MetaResponse<Todo, TodoInfo>> {
-  return fetch(`${url}/${body.id}`, {
+  return fetch(`${url}/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify(data),
   }).then((res) => res.json());
 }
 

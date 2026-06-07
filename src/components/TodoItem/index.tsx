@@ -20,7 +20,7 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Pr
 
   async function handleCheckboxChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
     try {
-      await updateTodo(data);
+      await updateTodo(data.id, { title: data.title, isDone: data.isDone });
       fetchTasks();
     } catch (error) {
       console.error(error);
@@ -29,7 +29,7 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Pr
 
   async function handleTitleChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
     try {
-      await updateTodo(data);
+      await updateTodo(data.id, { title: data.title, isDone: data.isDone });
       fetchTasks();
     } catch (error) {
       console.error(error);
