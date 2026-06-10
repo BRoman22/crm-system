@@ -1,6 +1,6 @@
-import styles from './styles.module.scss';
 import type { TodoInfo, TodoInfoFilters } from '../../types';
 import { FILTER_LABELS } from '../../constans';
+import { Tabs } from 'antd';
 
 interface Props {
   statuses: TodoInfo;
@@ -15,16 +15,14 @@ export default function TodoStatusFilter({ statuses, filter, setFilter }: Props)
   }));
 
   return (
-    <div className={styles.statusFilter}>
-      {filters.map(({ label, value }) => (
-        <h3
-          key={value}
-          className={`${styles.statusFilter__title} ${filter === value ? styles.active : ''}`}
-          onClick={() => setFilter(value)}
-        >
-          {`${label} (${statuses[value]})`}
-        </h3>
-      ))}
-    </div>
+    <Tabs
+      items={filters.map(({ label, value }) => ({
+        key: value,
+        label: `${label} (${statuses[value]})`,
+      }))}
+      activeKey={filter}
+      onChange={(key) => setFilter(key as TodoInfoFilters)}
+      size="large"
+    />
   );
 }
