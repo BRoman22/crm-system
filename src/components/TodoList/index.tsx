@@ -3,15 +3,15 @@ import { TodoItem } from '../index';
 import type { Todo } from '../../types';
 
 interface Props {
-  tasks: Todo[];
-  fetchTasks: () => void;
+  todos: Todo[];
+  fetchTodos: () => void;
 }
 
-export default function TodoList({ tasks, fetchTasks }: Props) {
+export default function TodoList({ todos, fetchTodos }: Props) {
   return (
     <ul className={styles.todolist}>
-      {tasks.map((item) => {
-        return <TodoItem key={item.id} item={item} fetchTasks={fetchTasks} />;
+      {todos.map((item) => {
+        return <TodoItem key={item.id} item={item} fetchTodos={fetchTodos} />;
       })}
     </ul>
   );

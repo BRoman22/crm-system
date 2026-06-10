@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback } from 'react';
 
 export default function TodoListPage() {
   const [filter, setFilter] = useState<TodoInfoFilters>('all');
-  const [tasks, setTasks] = useState<MetaResponse<Todo, TodoInfo>>({
+  const [todos, setTodos] = useState<MetaResponse<Todo, TodoInfo>>({
     data: [],
     info: {
       all: 0,
@@ -17,19 +17,19 @@ export default function TodoListPage() {
     },
   });
 
-  const fetchTasks = useCallback(() => {
-    getTodos(filter).then(setTasks);
+  const fetchTodos = useCallback(() => {
+    getTodos(filter).then(setTodos);
   }, [filter]);
 
   useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+    fetchTodos();
+  }, [fetchTodos]);
 
   return (
     <main className="app">
-      <AddTodo fetchTasks={fetchTasks} />
-      <TodoStatusFilter statuses={tasks.info} filter={filter} setFilter={setFilter} />
-      <Todolist tasks={tasks.data} fetchTasks={fetchTasks} />
+      <AddTodo fetchTodos={fetchTodos} />
+      <TodoStatusFilter statuses={todos.info} filter={filter} setFilter={setFilter} />
+      <Todolist todos={todos.data} fetchTodos={fetchTodos} />
     </main>
   );
 }

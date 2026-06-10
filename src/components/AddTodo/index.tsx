@@ -4,23 +4,23 @@ import { validateTitle } from '../../utils/validateTitle';
 import { createTodo } from '../../api/endpoints/todos';
 
 interface Props {
-  fetchTasks: () => void;
+  fetchTodos: () => void;
 }
 
-export default function AddTodo({ fetchTasks }: Props) {
+export default function AddTodo({ fetchTodos }: Props) {
   const [form] = Form.useForm();
 
-  async function handleCreateTask(data: Pick<Todo, 'title' | 'isDone'>) {
+  async function handleCreateTodo(data: Pick<Todo, 'title' | 'isDone'>) {
     try {
       await createTodo(data);
-      fetchTasks();
+      fetchTodos();
       form.resetFields();
     } catch (error) {
       console.error(error);
     }
   }
   const onFinish = async (values: { title: string }) => {
-    await handleCreateTask({ title: values.title, isDone: false });
+    await handleCreateTodo({ title: values.title, isDone: false });
   };
 
   return (

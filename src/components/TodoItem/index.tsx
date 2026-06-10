@@ -8,17 +8,17 @@ import { validateTitle } from '../../utils/validateTitle';
 
 interface Props {
   item: Todo;
-  fetchTasks: () => void;
+  fetchTodos: () => void;
 }
 
-export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Props) {
+export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [form] = Form.useForm();
 
   async function handleCheckboxChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
     try {
       await updateTodo(data.id, { title: data.title, isDone: data.isDone });
-      fetchTasks();
+      fetchTodos();
     } catch (error) {
       console.error(error);
     }
@@ -27,16 +27,16 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Pr
   async function handleTitleChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
     try {
       await updateTodo(data.id, { title: data.title, isDone: data.isDone });
-      fetchTasks();
+      fetchTodos();
     } catch (error) {
       console.error(error);
     }
   }
 
-  async function handleDeleteTask(id: number) {
+  async function handleDeleteTodo(id: number) {
     try {
       await deleteTodo(id);
-      fetchTasks();
+      fetchTodos();
     } catch (error) {
       console.error(error);
     }
@@ -67,7 +67,7 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Pr
   }
 
   return (
-    <li className={styles.tasklist__item}>
+    <li className={styles.todolist__item}>
       <Form
         form={form}
         initialValues={{ title: title, checkbox: isDone }}
@@ -107,7 +107,7 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Pr
             icon={<DeleteOutlined />}
             type="primary"
             htmlType="button"
-            onClick={() => handleDeleteTask(id)}
+            onClick={() => handleDeleteTodo(id)}
           />
         )}
       </Form>
