@@ -1,19 +1,18 @@
 import { VALIDATION_TITLE } from '../constans';
+import { type RuleObject } from 'antd/es/form';
 
-export function validateTitle(string: string): string {
-  const trimmedTitle = string.trim();
-
-  if (!trimmedTitle) {
-    return VALIDATION_TITLE.REQUIRED_MESSAGE;
+export const validateTitle = (_: RuleObject, value: string) => {
+  if (!value) {
+    return Promise.reject(new Error(VALIDATION_TITLE.REQUIRED_MESSAGE));
   }
 
-  if (trimmedTitle.length < VALIDATION_TITLE.MIN_LENGTH) {
-    return VALIDATION_TITLE.MIN_LENGTH_MESSAGE(trimmedTitle.length);
+  if (value.length < VALIDATION_TITLE.MIN_LENGTH) {
+    return Promise.reject(new Error(VALIDATION_TITLE.MIN_LENGTH_MESSAGE(value.length)));
   }
 
-  if (trimmedTitle.length > VALIDATION_TITLE.MAX_LENGTH) {
-    return VALIDATION_TITLE.MAX_LENGTH_MESSAGE(trimmedTitle.length);
+  if (value.length > VALIDATION_TITLE.MAX_LENGTH) {
+    return Promise.reject(new Error(VALIDATION_TITLE.MAX_LENGTH_MESSAGE(value.length)));
   }
 
-  return '';
-}
+  return Promise.resolve();
+};
