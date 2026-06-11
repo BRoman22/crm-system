@@ -23,6 +23,7 @@ export default function TodoStatusFilter({ statuses, filter, setFilter }: Props)
       activeKey={filter}
       onChange={(key) => setFilter(key as TodoInfoFilters)}
       size="large"
+      centered
     />
   );
 }

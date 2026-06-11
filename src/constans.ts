@@ -17,3 +17,22 @@ export const VALIDATION_TITLE = {
   MAX_LENGTH_MESSAGE: (current: number) =>
     `Максимальная длина ${VALIDATION_TITLE.MAX_LENGTH} символов (сейчас ${current})`,
 };
+
+export const ROUTES: { [key: string]: string } = {
+  TODO_LIST: '/',
+  PROFILE: '/profile',
+  NOT_FOUND: '/*',
+};
+
+export const NAVIGATION: { key: string; label: string; path: string }[] = [
+  {
+    key: '1',
+    label: 'Список задач',
+    path: ROUTES.TODO_LIST,
+  },
+  {
+    key: '2',
+    label: 'Профиль',
+    path: ROUTES.PROFILE,
+  },
+];
