@@ -28,6 +28,12 @@ export default function TodoListPage() {
 
   useEffect(() => {
     fetchTodos();
+
+    const intervalId = setInterval(() => {
+      fetchTodos();
+    }, 5000);
+
+    return () => clearInterval(intervalId);
   }, [fetchTodos]);
 
   const handleMenuClick = ({ key }: { key: string }) => {
