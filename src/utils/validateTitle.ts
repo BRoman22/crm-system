@@ -6,6 +6,10 @@ export const validateTitle = (_: RuleObject, value: string) => {
     return Promise.reject(new Error(VALIDATION_TITLE.REQUIRED_MESSAGE));
   }
 
+  if (value.trim().length === 0) {
+    return Promise.reject(new Error(VALIDATION_TITLE.ONLY_SPACES_MESSAGE));
+  }
+
   if (value.length < VALIDATION_TITLE.MIN_LENGTH) {
     return Promise.reject(new Error(VALIDATION_TITLE.MIN_LENGTH_MESSAGE(value.length)));
   }

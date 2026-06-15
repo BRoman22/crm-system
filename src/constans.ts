@@ -12,6 +12,7 @@ export const VALIDATION_TITLE = {
   MIN_LENGTH: 2,
   MAX_LENGTH: 64,
   REQUIRED_MESSAGE: 'Поле обязательно для заполнения',
+  ONLY_SPACES_MESSAGE: 'Поле не может состоять только из пробелов',
   MIN_LENGTH_MESSAGE: (current: number) =>
     `Минимальная длина ${VALIDATION_TITLE.MIN_LENGTH} символа (сейчас ${current})`,
   MAX_LENGTH_MESSAGE: (current: number) =>
