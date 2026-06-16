@@ -23,9 +23,10 @@ export const MainLayout = ({ children }: Props) => {
     backgroundColor: '#e3e6f4',
   };
 
-  const layoutStyle = {
+  const layoutStyle: React.CSSProperties = {
     width: '100%',
     height: '100vh',
+    flex: 1,
   };
 
   const handleMenuClick = ({ key }: { key: string }) => {
