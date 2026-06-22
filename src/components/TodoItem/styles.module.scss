@@ -3,4 +3,10 @@
   border-radius: 5px;
   background-color: white;
   list-style: none;
+
+  :global {
+    .ant-input-outlined.ant-input-disabled {
+      color: var(--ant-color-text);
+    }
+  }
 }
