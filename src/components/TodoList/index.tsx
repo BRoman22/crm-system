@@ -10,8 +10,8 @@ interface Props {
 export default function TodoList({ todos, fetchTodos }: Props) {
   return (
     <ul className={styles.todolist}>
-      {todos.map((item) => {
-        return <TodoItem key={item.id} item={item} fetchTodos={fetchTodos} />;
+      {todos.map((todo) => {
+        return <TodoItem key={todo.id} item={todo} fetchTodos={fetchTodos} />;
       })}
     </ul>
   );
