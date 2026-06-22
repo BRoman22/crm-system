@@ -1,6 +1,6 @@
 import { Button, Form, Input } from 'antd';
 import type { Todo } from '../../types';
-import { validateTitle } from '../../utils/validateTitle';
+import { VALIDATION_TITLE } from '../../constans';
 import { createTodo } from '../../api/endpoints/todos';
 
 interface Props {
@@ -30,7 +30,28 @@ export default function AddTodo({ fetchTodos }: Props) {
       style={{ display: 'flex', width: '100%' }}
       layout="inline"
     >
-      <Form.Item name="title" style={{ flex: 1 }} rules={[{ validator: validateTitle }]}>
+      <Form.Item
+        name="title"
+        style={{ flex: 1 }}
+        rules={[
+          {
+            required: true,
+            message: VALIDATION_TITLE.REQUIRED_MESSAGE,
+          },
+          {
+            min: VALIDATION_TITLE.MIN_LENGTH,
+            message: VALIDATION_TITLE.MIN_LENGTH_MESSAGE(),
+          },
+          {
+            max: VALIDATION_TITLE.MAX_LENGTH,
+            message: VALIDATION_TITLE.MAX_LENGTH_MESSAGE(),
+          },
+          {
+            whitespace: true,
+            message: VALIDATION_TITLE.ONLY_SPACES_MESSAGE,
+          },
+        ]}
+      >
         <Input placeholder="Task To Be Done" />
       </Form.Item>
       <Button type="primary" htmlType="submit">

@@ -4,7 +4,7 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { Todo } from '../../types';
 import { useState } from 'react';
 import { deleteTodo, updateTodo } from '../../api/endpoints/todos';
-import { validateTitle } from '../../utils/validateTitle';
+import { VALIDATION_TITLE } from '../../constans';
 
 interface Props {
   item: Todo;
@@ -82,7 +82,27 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
         <Form.Item name="checkbox" valuePropName="checked">
           <Checkbox disabled={isEditing} onChange={handleCheckboxClick} />
         </Form.Item>
-        <Form.Item name="title" rules={[{ validator: validateTitle }]}>
+        <Form.Item
+          name="title"
+          rules={[
+            {
+              required: true,
+              message: VALIDATION_TITLE.REQUIRED_MESSAGE,
+            },
+            {
+              min: VALIDATION_TITLE.MIN_LENGTH,
+              message: VALIDATION_TITLE.MIN_LENGTH_MESSAGE(),
+            },
+            {
+              max: VALIDATION_TITLE.MAX_LENGTH,
+              message: VALIDATION_TITLE.MAX_LENGTH_MESSAGE(),
+            },
+            {
+              whitespace: true,
+              message: VALIDATION_TITLE.ONLY_SPACES_MESSAGE,
+            },
+          ]}
+        >
           <Input disabled={!isEditing} />
         </Form.Item>
         {isEditing ? (
