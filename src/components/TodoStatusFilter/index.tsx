@@ -8,11 +8,21 @@ interface Props {
   setFilter: (value: TodoInfoFilters) => void;
 }
 
+function isTodoInfoFilters(value: string): value is TodoInfoFilters {
+  return ['all', 'completed', 'inWork'].includes(value);
+}
+
 export default function TodoStatusFilter({ statuses, filter, setFilter }: Props) {
-  const filters = (Object.keys(statuses) as TodoInfoFilters[]).map((key) => ({
-    label: FILTER_LABELS[key],
-    value: key,
-  }));
+  const filters = Object.keys(statuses)
+    .filter(isTodoInfoFilters)
+    .map((key) => ({
+      label: FILTER_LABELS[key],
+      value: key,
+    }));
+
+  const handleTabChange = (key: string) => {
+    setFilter(isTodoInfoFilters(key) ? key : 'all');
+  };
 
   return (
     <Tabs
@@ -21,7 +31,7 @@ export default function TodoStatusFilter({ statuses, filter, setFilter }: Props)
         label: `${label} (${statuses[value]})`,
       }))}
       activeKey={filter}
-      onChange={(key) => setFilter(key as TodoInfoFilters)}
+      onChange={handleTabChange}
       size="large"
       centered
     />
