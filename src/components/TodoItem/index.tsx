@@ -120,7 +120,7 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
             <Button type="primary" htmlType="submit">
               сохранить
             </Button>
-            <Button danger type="primary" htmlType="button" onClick={handleCancelEdit}>
+            <Button variant="outlined" color="danger" htmlType="button" onClick={handleCancelEdit}>
               отмена
             </Button>
           </>
