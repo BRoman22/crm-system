@@ -24,6 +24,15 @@ export const VALIDATION_TITLE: {
   MAX_LENGTH_MESSAGE: () => `Максимальная длина ${VALIDATION_TITLE.MAX_LENGTH} символов`,
 };
 
+export const ERROR_MESSAGES: { [key: string]: string } = {
+  TITLE: 'Ошибка',
+  UPDATE_STATUS: 'Не удалось обновить статус задачи. Пожалуйста, попробуйте снова.',
+  UPDATE_TITLE: 'Не удалось обновить задачу. Пожалуйста, попробуйте снова.',
+  DELETE_TODO: 'Не удалось удалить задачу. Пожалуйста, попробуйте снова.',
+  CREATE_TODO: 'Не удалось создать задачу. Пожалуйста, попробуйте снова.',
+  FETCH_TODOS: 'Не удалось загрузить задачи. Пожалуйста, обновите страницу.',
+};
+
 export const ROUTES: { [key: string]: string } = {
   TODO_LIST: '/',
   PROFILE: '/profile',

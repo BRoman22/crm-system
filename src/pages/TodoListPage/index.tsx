@@ -2,6 +2,8 @@ import { AddTodo, Todolist, TodoStatusFilter } from '../../components';
 import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../types';
 import { getTodos } from '../../api/endpoints/todos';
 import { useEffect, useState, useCallback } from 'react';
+import { notification } from 'antd';
+import { ERROR_MESSAGES } from '../../constans';
 
 export default function TodoListPage() {
   const [filter, setFilter] = useState<TodoInfoFilters>('all');
@@ -17,15 +19,23 @@ export default function TodoListPage() {
     },
   });
 
-  const fetchTodos = useCallback(() => {
-    getTodos(filter).then(setTodos);
+  const fetchTodos = useCallback(async () => {
+    try {
+      getTodos(filter).then(setTodos);
+    } catch (error) {
+      console.error(error);
+      notification.error({
+        title: ERROR_MESSAGES.TITLE,
+        description: ERROR_MESSAGES.FETCH_TODOS,
+      });
+    }
   }, [filter]);
 
   useEffect(() => {
-    fetchTodos();
+    void fetchTodos();
 
     const intervalId = setInterval(() => {
-      fetchTodos();
+      void fetchTodos();
     }, 5000);
 
     return () => clearInterval(intervalId);

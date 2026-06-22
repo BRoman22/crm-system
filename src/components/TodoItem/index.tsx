@@ -4,7 +4,8 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { Todo } from '../../types';
 import { useState } from 'react';
 import { deleteTodo, updateTodo } from '../../api/endpoints/todos';
-import { VALIDATION_TITLE } from '../../constans';
+import { VALIDATION_TITLE, ERROR_MESSAGES } from '../../constans';
+import { notification } from 'antd';
 
 interface Props {
   item: Todo;
@@ -18,28 +19,43 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
   async function handleCheckboxChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
     try {
       await updateTodo(data.id, { title: data.title, isDone: data.isDone });
-      fetchTodos();
     } catch (error) {
       console.error(error);
+      notification.error({
+        title: ERROR_MESSAGES.TITLE,
+        description: ERROR_MESSAGES.UPDATE_STATUS,
+      });
+    } finally {
+      fetchTodos();
     }
   }
 
   async function handleDeleteTodo(id: number) {
     try {
       await deleteTodo(id);
-      fetchTodos();
     } catch (error) {
       console.error(error);
+      notification.error({
+        title: ERROR_MESSAGES.TITLE,
+        description: ERROR_MESSAGES.DELETE_TODO,
+      });
+    } finally {
+      fetchTodos();
     }
   }
 
   async function onFinish(values: { title: string; isDone: boolean }) {
     try {
       await updateTodo(id, { title: values.title, isDone: values.isDone });
-      fetchTodos();
       setIsEditing(false);
     } catch (error) {
       console.error(error);
+      notification.error({
+        title: ERROR_MESSAGES.TITLE,
+        description: ERROR_MESSAGES.UPDATE_TITLE,
+      });
+    } finally {
+      fetchTodos();
     }
   }
 

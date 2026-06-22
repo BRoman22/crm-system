@@ -1,6 +1,8 @@
 import { Button, Form, Input } from 'antd';
 import { VALIDATION_TITLE } from '../../constans';
 import { createTodo } from '../../api/endpoints/todos';
+import { notification } from 'antd';
+import { ERROR_MESSAGES } from '../../constans';
 
 interface Props {
   fetchTodos: () => void;
@@ -11,10 +13,15 @@ export default function AddTodo({ fetchTodos }: Props) {
   const onFinish = async (values: { title: string }) => {
     try {
       await createTodo({ title: values.title, isDone: false });
-      fetchTodos();
       form.resetFields();
     } catch (error) {
       console.error(error);
+      notification.error({
+        title: ERROR_MESSAGES.TITLE,
+        description: ERROR_MESSAGES.CREATE_TODO,
+      });
+    } finally {
+      fetchTodos();
     }
   };
 
