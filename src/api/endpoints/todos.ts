@@ -36,7 +36,6 @@ export async function updateTodo(
   return response.data;
 }
 
-export async function deleteTodo(id: number): Promise<boolean> {
-  await apiClient.delete(`${todosUrl}/${id}`);
-  return true;
+export async function deleteTodo(id: number): Promise<void> {
+  await apiClient.delete<Todo>(`${todosUrl}/${id}`);
 }
