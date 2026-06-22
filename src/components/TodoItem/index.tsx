@@ -24,15 +24,6 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
     }
   }
 
-  async function handleTitleChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
-    try {
-      await updateTodo(data.id, { title: data.title, isDone: data.isDone });
-      fetchTodos();
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   async function handleDeleteTodo(id: number) {
     try {
       await deleteTodo(id);
@@ -42,24 +33,24 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
     }
   }
 
-  async function handleSaveTitle() {
+  async function onFinish(values: { title: string; isDone: boolean }) {
     try {
-      const values = await form.validateFields();
-      await handleTitleChange({ id, title: values.title, isDone });
+      await updateTodo(id, { title: values.title, isDone: values.isDone });
+      fetchTodos();
       setIsEditing(false);
     } catch (error) {
-      console.error('Validation failed:', error);
+      console.error(error);
     }
   }
 
-  function handleStartEdit() {
+  function handleStartEdit(e: React.MouseEvent<HTMLElement>) {
+    e.preventDefault();
     setIsEditing(true);
-    form.setFieldsValue({ title });
   }
 
   function handleCancelEdit() {
     setIsEditing(false);
-    form.setFieldsValue({ title });
+    form.resetFields();
   }
 
   function handleCheckboxClick() {
@@ -70,20 +61,23 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
     <li className={styles.todolist__item}>
       <Form
         form={form}
-        initialValues={{ title: title, checkbox: isDone }}
+        onFinish={onFinish}
+        initialValues={{ title: title, isDone: isDone }}
         style={{
           width: '100%',
-          display: 'grid',
-          gridTemplateColumns: '16px 1fr auto auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           gap: '8px',
         }}
         layout="inline"
       >
-        <Form.Item name="checkbox" valuePropName="checked">
+        <Form.Item name="isDone" valuePropName="checked">
           <Checkbox disabled={isEditing} onChange={handleCheckboxClick} />
         </Form.Item>
         <Form.Item
           name="title"
+          style={{ flex: 1 }}
           rules={[
             {
               required: true,
@@ -106,29 +100,30 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
           <Input disabled={!isEditing} />
         </Form.Item>
         {isEditing ? (
-          <Button type="primary" htmlType="submit" onClick={handleSaveTitle}>
-            сохранить
-          </Button>
+          <>
+            <Button type="primary" htmlType="submit">
+              сохранить
+            </Button>
+            <Button danger type="primary" htmlType="button" onClick={handleCancelEdit}>
+              отмена
+            </Button>
+          </>
         ) : (
-          <Button
-            icon={<EditOutlined />}
-            type="primary"
-            htmlType="button"
-            onClick={handleStartEdit}
-          />
-        )}
-        {isEditing ? (
-          <Button danger type="primary" htmlType="button" onClick={handleCancelEdit}>
-            отмена
-          </Button>
-        ) : (
-          <Button
-            danger
-            icon={<DeleteOutlined />}
-            type="primary"
-            htmlType="button"
-            onClick={() => handleDeleteTodo(id)}
-          />
+          <>
+            <Button
+              icon={<EditOutlined />}
+              type="primary"
+              htmlType="button"
+              onClick={handleStartEdit}
+            />
+            <Button
+              danger
+              icon={<DeleteOutlined />}
+              type="primary"
+              htmlType="button"
+              onClick={() => handleDeleteTodo(id)}
+            />
+          </>
         )}
       </Form>
     </li>

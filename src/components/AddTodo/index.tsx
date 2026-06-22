@@ -1,5 +1,4 @@
 import { Button, Form, Input } from 'antd';
-import type { Todo } from '../../types';
 import { VALIDATION_TITLE } from '../../constans';
 import { createTodo } from '../../api/endpoints/todos';
 
@@ -9,18 +8,14 @@ interface Props {
 
 export default function AddTodo({ fetchTodos }: Props) {
   const [form] = Form.useForm();
-
-  async function handleCreateTodo(data: Pick<Todo, 'title' | 'isDone'>) {
+  const onFinish = async (values: { title: string }) => {
     try {
-      await createTodo(data);
+      await createTodo({ title: values.title, isDone: false });
       fetchTodos();
       form.resetFields();
     } catch (error) {
       console.error(error);
     }
-  }
-  const onFinish = async (values: { title: string }) => {
-    await handleCreateTodo({ title: values.title, isDone: false });
   };
 
   return (
