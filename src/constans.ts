@@ -51,3 +51,5 @@ export const NAVIGATION: { key: string; label: string; path: string }[] = [
     path: ROUTES.PROFILE,
   },
 ];
+
+export const REFETCH_INTERVAL: number = 5000;
