@@ -20,9 +20,10 @@ export default function TodoStatusFilter({ statuses, filter, setFilter }: Props)
       value: key,
     }));
 
-  const handleTabChange = (key: string) => {
-    setFilter(isTodoInfoFilters(key) ? key : 'all');
-  };
+  function handleTabChange(key: string) {
+    if (!isTodoInfoFilters(key)) return;
+    setFilter(key);
+  }
 
   return (
     <Tabs
