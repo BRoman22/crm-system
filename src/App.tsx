@@ -1,15 +1,17 @@
-import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import { TodoListPage, NotFoundPage } from './pages';
+import { TodoListPage, NotFoundPage, ProfilePage } from './pages';
+import { ROUTES } from './constans';
+import { MainLayout } from './pages/MainLayout';
 
 function App() {
   return (
-    <div className="app">
+    <MainLayout>
       <Routes>
-        <Route path="/" element={<TodoListPage />} />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path={ROUTES.TODO_LIST} element={<TodoListPage />} />
+        <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
+        <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
       </Routes>
-    </div>
+    </MainLayout>
   );
 }
 

@@ -1,34 +1,41 @@
 import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../types';
 import { ENDPOINTS } from '../../constans';
+import axios, { type AxiosInstance } from 'axios';
 
 const { VITE_API_URL } = import.meta.env;
-const url = `${VITE_API_URL}/${ENDPOINTS.todos}`;
+const todosUrl = `${VITE_API_URL}/${ENDPOINTS.todos}`;
 
-export function getTodos(filter: TodoInfoFilters = 'all'): Promise<MetaResponse<Todo, TodoInfo>> {
-  return fetch(`${url}?filter=${filter}`).then((res) => res.json());
+const apiClient: AxiosInstance = axios.create({
+  baseURL: VITE_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+export async function getTodos(
+  filter: TodoInfoFilters = 'all'
+): Promise<MetaResponse<Todo, TodoInfo>> {
+  const response = await apiClient.get<MetaResponse<Todo, TodoInfo>>(todosUrl, {
+    params: { filter },
+  });
+  return response.data;
 }
 
-export function createTodo(
+export async function createTodo(
   data: Pick<Todo, 'title' | 'isDone'>
 ): Promise<MetaResponse<Todo, TodoInfo>> {
-  return fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  }).then((res) => res.json());
+  const response = await apiClient.post<MetaResponse<Todo, TodoInfo>>(todosUrl, data);
+  return response.data;
 }
 
-export function updateTodo(
+export async function updateTodo(
   id: number,
   data: Pick<Todo, 'title' | 'isDone'>
 ): Promise<MetaResponse<Todo, TodoInfo>> {
-  return fetch(`${url}/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  }).then((res) => res.json());
+  const response = await apiClient.put<MetaResponse<Todo, TodoInfo>>(`${todosUrl}/${id}`, data);
+  return response.data;
 }
 
-export function deleteTodo(id: number): Promise<boolean> {
-  return fetch(`${url}/${id}`, { method: 'DELETE' }).then(() => true);
+export async function deleteTodo(id: number): Promise<void> {
+  await apiClient.delete<Todo>(`${todosUrl}/${id}`);
 }

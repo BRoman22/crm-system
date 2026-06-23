@@ -1,6 +1,6 @@
-import styles from './styles.module.scss';
 import type { TodoInfo, TodoInfoFilters } from '../../types';
 import { FILTER_LABELS } from '../../constans';
+import { Tabs } from 'antd';
 
 interface Props {
   statuses: TodoInfo;
@@ -8,23 +8,33 @@ interface Props {
   setFilter: (value: TodoInfoFilters) => void;
 }
 
+function isTodoInfoFilters(value: string): value is TodoInfoFilters {
+  return ['all', 'completed', 'inWork'].includes(value);
+}
+
 export default function TodoStatusFilter({ statuses, filter, setFilter }: Props) {
-  const filters = (Object.keys(statuses) as TodoInfoFilters[]).map((key) => ({
-    label: FILTER_LABELS[key],
-    value: key,
-  }));
+  const filters = Object.keys(statuses)
+    .filter(isTodoInfoFilters)
+    .map((key) => ({
+      label: FILTER_LABELS[key],
+      value: key,
+    }));
+
+  function handleTabChange(key: string) {
+    if (!isTodoInfoFilters(key)) return;
+    setFilter(key);
+  }
 
   return (
-    <div className={styles.statusFilter}>
-      {filters.map(({ label, value }) => (
-        <h3
-          key={value}
-          className={`${styles.statusFilter__title} ${filter === value ? styles.active : ''}`}
-          onClick={() => setFilter(value)}
-        >
-          {`${label} (${statuses[value]})`}
-        </h3>
-      ))}
-    </div>
+    <Tabs
+      items={filters.map(({ label, value }) => ({
+        key: value,
+        label: `${label} (${statuses[value]})`,
+      }))}
+      activeKey={filter}
+      onChange={handleTabChange}
+      size="large"
+      centered
+    />
   );
 }

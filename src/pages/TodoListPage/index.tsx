@@ -2,10 +2,12 @@ import { AddTodo, Todolist, TodoStatusFilter } from '../../components';
 import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../types';
 import { getTodos } from '../../api/endpoints/todos';
 import { useEffect, useState, useCallback } from 'react';
+import { notification } from 'antd';
+import { ERROR_MESSAGES, TODOS_AUTO_REFRESH_INTERVAL } from '../../constans';
 
 export default function TodoListPage() {
   const [filter, setFilter] = useState<TodoInfoFilters>('all');
-  const [tasks, setTasks] = useState<MetaResponse<Todo, TodoInfo>>({
+  const [todos, setTodos] = useState<MetaResponse<Todo, TodoInfo>>({
     data: [],
     info: {
       all: 0,
@@ -17,19 +19,33 @@ export default function TodoListPage() {
     },
   });
 
-  const fetchTasks = useCallback(() => {
-    getTodos(filter).then(setTasks);
+  const fetchTodos = useCallback(async () => {
+    try {
+      getTodos(filter).then(setTodos);
+    } catch (error) {
+      console.error(error);
+      notification.error({
+        title: ERROR_MESSAGES.TITLE,
+        description: ERROR_MESSAGES.FETCH_TODOS,
+      });
+    }
   }, [filter]);
 
   useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+    fetchTodos();
+
+    const intervalId = setInterval(() => {
+      fetchTodos();
+    }, TODOS_AUTO_REFRESH_INTERVAL);
+
+    return () => clearInterval(intervalId);
+  }, [fetchTodos]);
 
   return (
-    <main className="app">
-      <AddTodo fetchTasks={fetchTasks} />
-      <TodoStatusFilter statuses={tasks.info} filter={filter} setFilter={setFilter} />
-      <Todolist tasks={tasks.data} fetchTasks={fetchTasks} />
-    </main>
+    <>
+      <AddTodo fetchTodos={fetchTodos} />
+      <TodoStatusFilter statuses={todos.info} filter={filter} setFilter={setFilter} />
+      <Todolist todos={todos.data} fetchTodos={fetchTodos} />
+    </>
   );
 }

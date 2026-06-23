@@ -1,51 +1,64 @@
-import styles from './styles.module.scss';
-import { Button } from '../../ui-kit';
-import type { Todo } from '../../types';
-import { validateTitle } from '../../utils/validateTitle';
+import { Button, Form, Input } from 'antd';
+import { VALIDATION_TITLE } from '../../constans';
 import { createTodo } from '../../api/endpoints/todos';
-import { useState } from 'react';
+import { notification } from 'antd';
+import { ERROR_MESSAGES } from '../../constans';
 
 interface Props {
-  fetchTasks: () => void;
+  fetchTodos: () => void;
 }
 
-export default function AddTodo({ fetchTasks }: Props) {
-  const [title, setTitle] = useState<string>('');
-
-  async function handleCreateTask(data: Pick<Todo, 'title' | 'isDone'>) {
+export default function AddTodo({ fetchTodos }: Props) {
+  const [form] = Form.useForm();
+  const onFinish = async (values: { title: string }) => {
     try {
-      await createTodo(data);
-      fetchTasks();
-      setTitle('');
+      await createTodo({ title: values.title, isDone: false });
+      form.resetFields();
     } catch (error) {
       console.error(error);
+      notification.error({
+        title: ERROR_MESSAGES.TITLE,
+        description: ERROR_MESSAGES.CREATE_TODO,
+      });
+    } finally {
+      fetchTodos();
     }
-  }
-
-  function handleFormSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const validationError = validateTitle(title);
-
-    if (validationError) {
-      alert(validationError);
-      return;
-    }
-
-    handleCreateTask({ title, isDone: false });
-  }
+  };
 
   return (
-    <form className={styles.addTodo} onSubmit={handleFormSubmit} noValidate>
-      <input
-        className={styles.addTodo__input}
-        autoComplete="off"
-        name={'name'}
-        placeholder="Task To Be Done..."
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <Button title="Add" color="primary" type="submit" />
-    </form>
+    <Form
+      form={form}
+      onFinish={onFinish}
+      style={{ display: 'flex', width: '100%' }}
+      layout="inline"
+    >
+      <Form.Item
+        name="title"
+        style={{ flex: 1 }}
+        rules={[
+          {
+            required: true,
+            message: VALIDATION_TITLE.REQUIRED_MESSAGE,
+          },
+          {
+            min: VALIDATION_TITLE.MIN_LENGTH,
+            message: VALIDATION_TITLE.MIN_LENGTH_MESSAGE,
+          },
+          {
+            max: VALIDATION_TITLE.MAX_LENGTH,
+            message: VALIDATION_TITLE.MAX_LENGTH_MESSAGE,
+          },
+          {
+            whitespace: true,
+            message: VALIDATION_TITLE.ONLY_SPACES_MESSAGE,
+          },
+        ]}
+      >
+        <Input placeholder="Task To Be Done" />
+      </Form.Item>
+      <Button type="primary" htmlType="submit">
+        Add
+      </Button>
+    </Form>
   );
 }

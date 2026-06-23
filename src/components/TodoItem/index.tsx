@@ -1,126 +1,153 @@
 import styles from './styles.module.scss';
-import { Checkbox, IconButton, Button } from '../../ui-kit';
-import { EditIcon, DeleteIcon } from '../../assets';
+import { Checkbox, Button, Input, Form } from 'antd';
+import { EditOutlined, DeleteOutlined, CheckOutlined, UndoOutlined } from '@ant-design/icons';
 import type { Todo } from '../../types';
-import { validateTitle } from '../../utils/validateTitle';
 import { useState } from 'react';
 import { deleteTodo, updateTodo } from '../../api/endpoints/todos';
+import { VALIDATION_TITLE, ERROR_MESSAGES } from '../../constans';
+import { notification } from 'antd';
 
 interface Props {
   item: Todo;
-  fetchTasks: () => void;
+  fetchTodos: () => void;
 }
 
-export default function TodoItem({ item: { id, title, isDone }, fetchTasks }: Props) {
+export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Props) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState<string>(title);
-  const [error, setError] = useState<string>('');
-
-  const displayValue = isEditing ? editValue : title;
+  const [form] = Form.useForm();
 
   async function handleCheckboxChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
     try {
       await updateTodo(data.id, { title: data.title, isDone: data.isDone });
-      fetchTasks();
     } catch (error) {
       console.error(error);
+      notification.error({
+        title: ERROR_MESSAGES.TITLE,
+        description: ERROR_MESSAGES.UPDATE_STATUS,
+      });
+    } finally {
+      fetchTodos();
     }
   }
 
-  async function handleTitleChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
-    try {
-      await updateTodo(data.id, { title: data.title, isDone: data.isDone });
-      fetchTasks();
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function handleDeleteTask(id: number) {
+  async function handleDeleteTodo(id: number) {
     try {
       await deleteTodo(id);
-      fetchTasks();
     } catch (error) {
       console.error(error);
+      notification.error({
+        title: ERROR_MESSAGES.TITLE,
+        description: ERROR_MESSAGES.DELETE_TODO,
+      });
+    } finally {
+      fetchTodos();
     }
   }
 
-  function handleSaveTitle() {
-    const validationError = validateTitle(editValue);
-
-    if (validationError) {
-      setError(validationError);
-      return;
+  async function onFinish(values: { title: string; isDone: boolean }) {
+    try {
+      await updateTodo(id, { title: values.title, isDone: values.isDone });
+      setIsEditing(false);
+    } catch (error) {
+      console.error(error);
+      notification.error({
+        title: ERROR_MESSAGES.TITLE,
+        description: ERROR_MESSAGES.UPDATE_TITLE,
+      });
+    } finally {
+      fetchTodos();
     }
-
-    handleTitleChange({ id, title: editValue, isDone });
-    setIsEditing(false);
-    setError('');
   }
 
-  function handleStartEdit() {
+  function handleStartEdit(e: React.MouseEvent<HTMLElement>) {
+    e.preventDefault();
     setIsEditing(true);
-    setEditValue(title);
-    setError('');
   }
 
   function handleCancelEdit() {
     setIsEditing(false);
-    setEditValue(title);
-    setError('');
-  }
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const newValue = e.target.value;
-    setEditValue(newValue);
-
-    const validationError = validateTitle(newValue);
-    setError(validationError || '');
+    form.resetFields();
   }
 
   function handleCheckboxClick() {
-    if (!isEditing) {
-      handleCheckboxChange({ id, title: editValue, isDone: !isDone });
-    }
-  }
-
-  function onSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    handleSaveTitle();
+    handleCheckboxChange({ id, title: title, isDone: !isDone });
   }
 
   return (
-    <li className={styles.tasklist__item}>
-      <form className={styles.tasklist__wrapper} onSubmit={onSubmit}>
-        <Checkbox checked={isDone} isEditing={isEditing} onChange={handleCheckboxClick} />
-        <input
-          type="text"
-          className={`${styles.tasklist__title} ${isDone ? styles.checked : ''}`}
-          value={displayValue}
+    <li className={styles.todolist__item}>
+      <Form
+        form={form}
+        onFinish={onFinish}
+        initialValues={{ title: title, isDone: isDone }}
+        style={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '8px',
+        }}
+        layout="inline"
+      >
+        <Form.Item name="isDone" valuePropName="checked">
+          <Checkbox disabled={isEditing} onChange={handleCheckboxClick} />
+        </Form.Item>
+        <Form.Item
           name="title"
-          readOnly={!isEditing}
-          onChange={handleChange}
-        />
-        {error && isEditing && <div className={styles.errorMessage}>{error}</div>}
-      </form>
-      {isEditing ? (
-        <Button title="сохранить" color="primary" onClick={handleSaveTitle} />
-      ) : (
-        <IconButton
-          children={<img src={EditIcon} alt="edit" width={12} height={12} />}
-          color="primary"
-          onClick={handleStartEdit}
-        />
-      )}
-      {isEditing ? (
-        <Button title="отмена" color="secondary" onClick={handleCancelEdit} />
-      ) : (
-        <IconButton
-          children={<img src={DeleteIcon} alt="delete" width={12} height={12} />}
-          color="secondary"
-          onClick={() => handleDeleteTask(id)}
-        />
-      )}
+          style={{ flex: 1 }}
+          rules={[
+            {
+              required: true,
+              message: VALIDATION_TITLE.REQUIRED_MESSAGE,
+            },
+            {
+              min: VALIDATION_TITLE.MIN_LENGTH,
+              message: VALIDATION_TITLE.MIN_LENGTH_MESSAGE,
+            },
+            {
+              max: VALIDATION_TITLE.MAX_LENGTH,
+              message: VALIDATION_TITLE.MAX_LENGTH_MESSAGE,
+            },
+            {
+              whitespace: true,
+              message: VALIDATION_TITLE.ONLY_SPACES_MESSAGE,
+            },
+          ]}
+        >
+          <Input disabled={!isEditing} />
+        </Form.Item>
+        {isEditing ? (
+          <>
+            <Button type="primary" htmlType="submit" icon={<CheckOutlined />}>
+              сохранить
+            </Button>
+            <Button
+              variant="outlined"
+              color="danger"
+              htmlType="button"
+              onClick={handleCancelEdit}
+              icon={<UndoOutlined />}
+            >
+              отмена
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              icon={<EditOutlined />}
+              type="primary"
+              htmlType="button"
+              onClick={handleStartEdit}
+            />
+            <Button
+              danger
+              icon={<DeleteOutlined />}
+              type="primary"
+              htmlType="button"
+              onClick={() => handleDeleteTodo(id)}
+            />
+          </>
+        )}
+      </Form>
     </li>
   );
 }
