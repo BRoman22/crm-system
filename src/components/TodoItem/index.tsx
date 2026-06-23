@@ -101,11 +101,11 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
             },
             {
               min: VALIDATION_TITLE.MIN_LENGTH,
-              message: VALIDATION_TITLE.MIN_LENGTH_MESSAGE(),
+              message: VALIDATION_TITLE.MIN_LENGTH_MESSAGE,
             },
             {
               max: VALIDATION_TITLE.MAX_LENGTH,
-              message: VALIDATION_TITLE.MAX_LENGTH_MESSAGE(),
+              message: VALIDATION_TITLE.MAX_LENGTH_MESSAGE,
             },
             {
               whitespace: true,

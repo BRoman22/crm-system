@@ -8,20 +8,22 @@ export const ENDPOINTS: { [key: string]: string } = {
   todos: 'todos',
 };
 
+const MIN_LENGTH = 2;
+const MAX_LENGTH = 64;
 export const VALIDATION_TITLE: {
   MIN_LENGTH: number;
   MAX_LENGTH: number;
   REQUIRED_MESSAGE: string;
   ONLY_SPACES_MESSAGE: string;
-  MIN_LENGTH_MESSAGE: () => string;
-  MAX_LENGTH_MESSAGE: () => string;
+  MIN_LENGTH_MESSAGE: string;
+  MAX_LENGTH_MESSAGE: string;
 } = {
-  MIN_LENGTH: 2,
-  MAX_LENGTH: 64,
+  MIN_LENGTH: MIN_LENGTH,
+  MAX_LENGTH: MAX_LENGTH,
   REQUIRED_MESSAGE: 'Поле обязательно для заполнения',
   ONLY_SPACES_MESSAGE: 'Поле не может состоять только из пробелов',
-  MIN_LENGTH_MESSAGE: () => `Минимальная длина ${VALIDATION_TITLE.MIN_LENGTH} символа`,
-  MAX_LENGTH_MESSAGE: () => `Максимальная длина ${VALIDATION_TITLE.MAX_LENGTH} символов`,
+  MIN_LENGTH_MESSAGE: `Минимальная длина ${MIN_LENGTH} символа`,
+  MAX_LENGTH_MESSAGE: `Максимальная длина ${MAX_LENGTH} символов`,
 };
 
 export const ERROR_MESSAGES: { [key: string]: string } = {
