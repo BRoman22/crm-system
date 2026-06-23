@@ -54,4 +54,4 @@ export const NAVIGATION: { key: string; label: string; path: string }[] = [
   },
 ];
 
-export const REFETCH_INTERVAL: number = 5000;
+export const TODOS_AUTO_REFRESH_INTERVAL: number = 5000;

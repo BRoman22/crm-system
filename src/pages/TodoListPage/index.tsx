@@ -3,7 +3,7 @@ import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../types'
 import { getTodos } from '../../api/endpoints/todos';
 import { useEffect, useState, useCallback } from 'react';
 import { notification } from 'antd';
-import { ERROR_MESSAGES, REFETCH_INTERVAL } from '../../constans';
+import { ERROR_MESSAGES, TODOS_AUTO_REFRESH_INTERVAL } from '../../constans';
 
 export default function TodoListPage() {
   const [filter, setFilter] = useState<TodoInfoFilters>('all');
@@ -36,7 +36,7 @@ export default function TodoListPage() {
 
     const intervalId = setInterval(() => {
       fetchTodos();
-    }, REFETCH_INTERVAL);
+    }, TODOS_AUTO_REFRESH_INTERVAL);
 
     return () => clearInterval(intervalId);
   }, [fetchTodos]);
