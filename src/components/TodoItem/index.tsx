@@ -1,6 +1,6 @@
 import styles from './styles.module.scss';
 import { Checkbox, Button, Input, Form } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, CheckOutlined, UndoOutlined } from '@ant-design/icons';
 import type { Todo } from '../../types';
 import { useState } from 'react';
 import { deleteTodo, updateTodo } from '../../api/endpoints/todos';
@@ -117,10 +117,16 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
         </Form.Item>
         {isEditing ? (
           <>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" icon={<CheckOutlined />}>
               сохранить
             </Button>
-            <Button variant="outlined" color="danger" htmlType="button" onClick={handleCancelEdit}>
+            <Button
+              variant="outlined"
+              color="danger"
+              htmlType="button"
+              onClick={handleCancelEdit}
+              icon={<UndoOutlined />}
+            >
               отмена
             </Button>
           </>
