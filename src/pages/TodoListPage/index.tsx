@@ -1,51 +1,33 @@
 import { AddTodo, Todolist, TodoStatusFilter } from '../../components';
-import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../types';
-import { getTodos } from '../../api/endpoints/todos';
-import { useEffect, useState, useCallback } from 'react';
+import type { TodoInfoFilters } from '../../types';
+import { useEffect, useState } from 'react';
 import { notification } from 'antd';
 import { ERROR_MESSAGES, TODOS_AUTO_REFRESH_INTERVAL } from '../../constans';
+import { useGetTodosQuery } from '../../store/api/todos';
 
 export default function TodoListPage() {
   const [filter, setFilter] = useState<TodoInfoFilters>('all');
-  const [todos, setTodos] = useState<MetaResponse<Todo, TodoInfo>>({
-    data: [],
-    info: {
-      all: 0,
-      completed: 0,
-      inWork: 0,
-    },
-    meta: {
-      totalAmount: 0,
-    },
+
+  const { data, error, refetch } = useGetTodosQuery(filter, {
+    pollingInterval: TODOS_AUTO_REFRESH_INTERVAL,
   });
 
-  const fetchTodos = useCallback(async () => {
-    try {
-      getTodos(filter).then(setTodos);
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    if (error) {
       notification.error({
         title: ERROR_MESSAGES.TITLE,
         description: ERROR_MESSAGES.FETCH_TODOS,
       });
     }
-  }, [filter]);
+  }, [error]);
 
-  useEffect(() => {
-    fetchTodos();
-
-    const intervalId = setInterval(() => {
-      fetchTodos();
-    }, TODOS_AUTO_REFRESH_INTERVAL);
-
-    return () => clearInterval(intervalId);
-  }, [fetchTodos]);
-
-  return (
+  return data ? (
     <>
-      <AddTodo fetchTodos={fetchTodos} />
-      <TodoStatusFilter statuses={todos.info} filter={filter} setFilter={setFilter} />
-      <Todolist todos={todos.data} fetchTodos={fetchTodos} />
+      <AddTodo fetchTodos={refetch} />
+      <TodoStatusFilter statuses={data.info} filter={filter} setFilter={setFilter} />
+      <Todolist todos={data.data} fetchTodos={refetch} />
     </>
+  ) : (
+    <div>Загрузка...</div>
   );
 }

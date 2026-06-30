@@ -1,6 +1,6 @@
 import { Button, Form, Input } from 'antd';
 import { VALIDATION_TITLE } from '../../constans';
-import { createTodo } from '../../api/endpoints/todos';
+import { useCreateTodoMutation } from '../../store/api/todos';
 import { notification } from 'antd';
 import { ERROR_MESSAGES } from '../../constans';
 
@@ -9,6 +9,7 @@ interface Props {
 }
 
 export default function AddTodo({ fetchTodos }: Props) {
+  const [createTodo] = useCreateTodoMutation();
   const [form] = Form.useForm();
   const onFinish = async (values: { title: string }) => {
     try {

@@ -3,7 +3,7 @@ import { Checkbox, Button, Input, Form } from 'antd';
 import { EditOutlined, DeleteOutlined, CheckOutlined, UndoOutlined } from '@ant-design/icons';
 import type { Todo } from '../../types';
 import { useState } from 'react';
-import { deleteTodo, updateTodo } from '../../api/endpoints/todos';
+import { useDeleteTodoMutation, useUpdateTodoMutation } from '../../store/api/todos';
 import { VALIDATION_TITLE, ERROR_MESSAGES } from '../../constans';
 import { notification } from 'antd';
 
@@ -13,12 +13,14 @@ interface Props {
 }
 
 export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Props) {
+  const [updateTodo] = useUpdateTodoMutation();
+  const [deleteTodo] = useDeleteTodoMutation();
   const [isEditing, setIsEditing] = useState(false);
   const [form] = Form.useForm();
 
   async function handleCheckboxChange(data: Pick<Todo, 'id' | 'title' | 'isDone'>) {
     try {
-      await updateTodo(data.id, { title: data.title, isDone: data.isDone });
+      await updateTodo({ id: data.id, body: { title: data.title, isDone: data.isDone } });
     } catch (error) {
       console.error(error);
       notification.error({
@@ -46,7 +48,7 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
 
   async function onFinish(values: { title: string; isDone: boolean }) {
     try {
-      await updateTodo(id, { title: values.title, isDone: values.isDone });
+      await updateTodo({ id, body: { title: values.title, isDone: values.isDone } });
       setIsEditing(false);
     } catch (error) {
       console.error(error);
