@@ -2,7 +2,7 @@ import { AddTodo, Todolist, TodoStatusFilter } from '../../components';
 import type { TodoInfoFilters } from '../../types';
 import { useEffect, useState } from 'react';
 import { notification } from 'antd';
-import { ERROR_MESSAGES, TODOS_AUTO_REFRESH_INTERVAL } from '../../constans';
+import { TODOS_ERROR_MESSAGES, TODOS_AUTO_REFRESH_INTERVAL } from '../../constans';
 import { useGetTodosQuery } from '../../store/api/todos';
 
 export default function TodoListPage() {
@@ -15,8 +15,8 @@ export default function TodoListPage() {
   useEffect(() => {
     if (error) {
       notification.error({
-        title: ERROR_MESSAGES.TITLE,
-        description: ERROR_MESSAGES.FETCH_TODOS,
+        title: TODOS_ERROR_MESSAGES.TITLE,
+        description: TODOS_ERROR_MESSAGES.GET_TODOS,
       });
     }
   }, [error]);

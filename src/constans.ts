@@ -8,40 +8,16 @@ export const ENDPOINTS: { [key: string]: string } = {
   todos: 'todos',
 };
 
-const MIN_LENGTH = 2;
-const MAX_LENGTH = 64;
-export const VALIDATION_TITLE: {
-  MIN_LENGTH: number;
-  MAX_LENGTH: number;
-  REQUIRED_MESSAGE: string;
-  ONLY_SPACES_MESSAGE: string;
-  MIN_LENGTH_MESSAGE: string;
-  MAX_LENGTH_MESSAGE: string;
-} = {
-  MIN_LENGTH: MIN_LENGTH,
-  MAX_LENGTH: MAX_LENGTH,
-  REQUIRED_MESSAGE: 'Поле обязательно для заполнения',
-  ONLY_SPACES_MESSAGE: 'Поле не может состоять только из пробелов',
-  MIN_LENGTH_MESSAGE: `Минимальная длина ${MIN_LENGTH} символа`,
-  MAX_LENGTH_MESSAGE: `Максимальная длина ${MAX_LENGTH} символов`,
-};
-
-export const ERROR_MESSAGES: { [key: string]: string } = {
-  TITLE: 'Ошибка',
-  UPDATE_STATUS: 'Не удалось обновить статус задачи. Пожалуйста, попробуйте снова.',
-  UPDATE_TITLE: 'Не удалось обновить задачу. Пожалуйста, попробуйте снова.',
-  DELETE_TODO: 'Не удалось удалить задачу. Пожалуйста, попробуйте снова.',
-  CREATE_TODO: 'Не удалось создать задачу. Пожалуйста, попробуйте снова.',
-  FETCH_TODOS: 'Не удалось загрузить задачи. Пожалуйста, обновите страницу.',
-};
-
 export const ROUTES: { [key: string]: string } = {
+  LOGIN: '/login',
+  REGISTER: '/register',
+  FORGOT_PASSWORD: '/forgot-password',
   TODO_LIST: '/',
   PROFILE: '/profile',
   NOT_FOUND: '/*',
 };
 
-export const NAVIGATION: { key: string; label: string; path: string }[] = [
+export const NAVIGATION_MENU: { key: string; label: string; path: string }[] = [
   {
     key: '1',
     label: 'Список задач',
@@ -55,3 +31,75 @@ export const NAVIGATION: { key: string; label: string; path: string }[] = [
 ];
 
 export const TODOS_AUTO_REFRESH_INTERVAL: number = 5000;
+
+export const TODOS_ERROR_MESSAGES: { [key: string]: string } = {
+  TITLE: 'Ошибка',
+  UPDATE_STATUS: 'Не удалось обновить статус задачи. Пожалуйста, попробуйте снова.',
+  UPDATE_TITLE: 'Не удалось обновить задачу. Пожалуйста, попробуйте снова.',
+  DELETE_TODO: 'Не удалось удалить задачу. Пожалуйста, попробуйте снова.',
+  CREATE_TODO: 'Не удалось создать задачу. Пожалуйста, попробуйте снова.',
+  GET_TODOS: 'Не удалось загрузить задачи. Пожалуйста, обновите страницу.',
+};
+
+type Validation = {
+  MIN_LENGTH: number;
+  MAX_LENGTH: number;
+  REQUIRED_MESSAGE: string;
+  ONLY_SPACES_MESSAGE: string;
+  MIN_LENGTH_MESSAGE: string;
+  MAX_LENGTH_MESSAGE: string;
+};
+
+const TODOS_TITLE_MIN_LENGTH = 2;
+const TODOS_TITLE_MAX_LENGTH = 64;
+export const TODOS_VALIDATION_TITLE: Validation = {
+  MIN_LENGTH: TODOS_TITLE_MIN_LENGTH,
+  MAX_LENGTH: TODOS_TITLE_MAX_LENGTH,
+  REQUIRED_MESSAGE: 'Поле обязательно для заполнения',
+  ONLY_SPACES_MESSAGE: 'Поле не может состоять только из пробелов',
+  MIN_LENGTH_MESSAGE: `Минимальная длина ${TODOS_TITLE_MIN_LENGTH} символа`,
+  MAX_LENGTH_MESSAGE: `Максимальная длина ${TODOS_TITLE_MAX_LENGTH} символов`,
+};
+
+const AUTH_NAME_MIN_LENGTH = 1;
+const AUTH_NAME_MAX_LENGTH = 60;
+export const AUTH_VALIDATION_NAME: Validation = {
+  MIN_LENGTH: AUTH_NAME_MIN_LENGTH,
+  MAX_LENGTH: AUTH_NAME_MAX_LENGTH,
+  REQUIRED_MESSAGE: 'Пожалуйста, введите ваше имя!',
+  ONLY_SPACES_MESSAGE: 'Поле не может состоять только из пробелов',
+  MIN_LENGTH_MESSAGE: `Имя должно содержать минимум ${AUTH_NAME_MIN_LENGTH} символа`,
+  MAX_LENGTH_MESSAGE: `Имя должно содержать максимум ${AUTH_NAME_MAX_LENGTH} символов`,
+};
+
+const AUTH_LOGIN_MIN_LENGTH = 2;
+const AUTH_LOGIN_MAX_LENGTH = 60;
+export const AUTH_VALIDATION_LOGIN: Validation = {
+  MIN_LENGTH: AUTH_LOGIN_MIN_LENGTH,
+  MAX_LENGTH: AUTH_LOGIN_MAX_LENGTH,
+  REQUIRED_MESSAGE: 'Пожалуйста, введите ваш логин!',
+  ONLY_SPACES_MESSAGE: 'Поле не может состоять только из пробелов',
+  MIN_LENGTH_MESSAGE: `Логин должен содержать минимум ${AUTH_LOGIN_MIN_LENGTH} символа`,
+  MAX_LENGTH_MESSAGE: `Логин должен содержать максимум ${AUTH_LOGIN_MAX_LENGTH} символов`,
+};
+
+const AUTH_PASSWORD_MIN_LENGTH = 6;
+const AUTH_PASSWORD_MAX_LENGTH = 60;
+export const AUTH_VALIDATION_PASSWORD: Validation = {
+  MIN_LENGTH: AUTH_PASSWORD_MIN_LENGTH,
+  MAX_LENGTH: AUTH_PASSWORD_MAX_LENGTH,
+  REQUIRED_MESSAGE: 'Пожалуйста, введите ваш пароль!',
+  ONLY_SPACES_MESSAGE: 'Поле не может состоять только из пробелов',
+  MIN_LENGTH_MESSAGE: `Пароль должен содержать минимум ${AUTH_PASSWORD_MIN_LENGTH} символа`,
+  MAX_LENGTH_MESSAGE: `Пароль должен содержать максимум ${AUTH_PASSWORD_MAX_LENGTH} символов`,
+};
+
+export const AUTH_VALIDATION_EMAIL: { [key: string]: string } = {
+  REQUIRED_MESSAGE: 'Пожалуйста, введите ваш почтовый адрес!',
+  CORRECT_EMAIL_MESSAGE: 'Пожалуйста, введите корректный email адрес!',
+};
+
+export const AUTH_VALIDATION_PHONE: { [key: string]: string } = {
+  REQUIRED_MESSAGE: 'Пожалуйста, введите ваш номер телефона!',
+  CORRECT_PHONE_MESSAGE: 'Введите номер в формате +7XXXXXXXXXX (10 цифр после +7)',
+};

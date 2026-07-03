@@ -1,11 +1,10 @@
 import styles from './styles.module.scss';
-import { Checkbox, Button, Input, Form } from 'antd';
+import { Checkbox, Button, Input, Form, notification } from 'antd';
 import { EditOutlined, DeleteOutlined, CheckOutlined, UndoOutlined } from '@ant-design/icons';
 import type { Todo } from '../../types';
 import { useState } from 'react';
 import { useDeleteTodoMutation, useUpdateTodoMutation } from '../../store/api/todos';
-import { VALIDATION_TITLE, ERROR_MESSAGES } from '../../constans';
-import { notification } from 'antd';
+import { TODOS_VALIDATION_TITLE, TODOS_ERROR_MESSAGES } from '../../constans';
 
 interface Props {
   item: Todo;
@@ -24,8 +23,8 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
     } catch (error) {
       console.error(error);
       notification.error({
-        title: ERROR_MESSAGES.TITLE,
-        description: ERROR_MESSAGES.UPDATE_STATUS,
+        title: TODOS_ERROR_MESSAGES.TITLE,
+        description: TODOS_ERROR_MESSAGES.UPDATE_STATUS,
       });
     } finally {
       fetchTodos();
@@ -38,8 +37,8 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
     } catch (error) {
       console.error(error);
       notification.error({
-        title: ERROR_MESSAGES.TITLE,
-        description: ERROR_MESSAGES.DELETE_TODO,
+        title: TODOS_ERROR_MESSAGES.TITLE,
+        description: TODOS_ERROR_MESSAGES.DELETE_TODO,
       });
     } finally {
       fetchTodos();
@@ -53,8 +52,8 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
     } catch (error) {
       console.error(error);
       notification.error({
-        title: ERROR_MESSAGES.TITLE,
-        description: ERROR_MESSAGES.UPDATE_TITLE,
+        title: TODOS_ERROR_MESSAGES.TITLE,
+        description: TODOS_ERROR_MESSAGES.UPDATE_TITLE,
       });
     } finally {
       fetchTodos();
@@ -99,19 +98,19 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
           rules={[
             {
               required: true,
-              message: VALIDATION_TITLE.REQUIRED_MESSAGE,
+              message: TODOS_VALIDATION_TITLE.REQUIRED_MESSAGE,
             },
             {
-              min: VALIDATION_TITLE.MIN_LENGTH,
-              message: VALIDATION_TITLE.MIN_LENGTH_MESSAGE,
+              min: TODOS_VALIDATION_TITLE.MIN_LENGTH,
+              message: TODOS_VALIDATION_TITLE.MIN_LENGTH_MESSAGE,
             },
             {
-              max: VALIDATION_TITLE.MAX_LENGTH,
-              message: VALIDATION_TITLE.MAX_LENGTH_MESSAGE,
+              max: TODOS_VALIDATION_TITLE.MAX_LENGTH,
+              message: TODOS_VALIDATION_TITLE.MAX_LENGTH_MESSAGE,
             },
             {
               whitespace: true,
-              message: VALIDATION_TITLE.ONLY_SPACES_MESSAGE,
+              message: TODOS_VALIDATION_TITLE.ONLY_SPACES_MESSAGE,
             },
           ]}
         >

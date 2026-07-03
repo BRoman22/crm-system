@@ -1,15 +1,19 @@
 import { Layout, Menu } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { NAVIGATION } from '../../constans';
-import type { ReactNode } from 'react';
+import { Outlet, useNavigate, Navigate } from 'react-router-dom';
+import { NAVIGATION_MENU } from '../../constans';
 
 interface Props {
-  children: ReactNode;
+  isAuth: boolean;
+  redirectPath: string;
 }
 
-export const MainLayout = ({ children }: Props) => {
+export default function MainLayout({ isAuth, redirectPath }: Props) {
   const { Sider, Content } = Layout;
   const navigate = useNavigate();
+
+  if (!isAuth) {
+    return <Navigate to={redirectPath} replace />;
+  }
 
   const contentStyle: React.CSSProperties = {
     textAlign: 'center',
@@ -30,7 +34,7 @@ export const MainLayout = ({ children }: Props) => {
   };
 
   const handleMenuClick = ({ key }: { key: string }) => {
-    const selectedItem = NAVIGATION.find((item) => item.key === key);
+    const selectedItem = NAVIGATION_MENU.find((item) => item.key === key);
     if (selectedItem) {
       navigate(selectedItem.path);
     }
@@ -41,12 +45,12 @@ export const MainLayout = ({ children }: Props) => {
       <Sider width="20%" style={siderStyle}>
         <Menu
           mode="inline"
-          defaultSelectedKeys={[NAVIGATION[0].key]}
-          items={NAVIGATION}
+          defaultSelectedKeys={[NAVIGATION_MENU[0].key]}
+          items={NAVIGATION_MENU}
           onClick={handleMenuClick}
         />
       </Sider>
-      <Content style={contentStyle}>{children}</Content>
+      <Content style={contentStyle}>{<Outlet />}</Content>
     </Layout>
   );
-};
+}

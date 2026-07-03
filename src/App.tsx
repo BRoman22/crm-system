@@ -1,18 +1,39 @@
-import { Routes, Route } from 'react-router-dom';
-import { TodoListPage, NotFoundPage, ProfilePage } from './pages';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import {
+  TodoListPage,
+  ProfilePage,
+  LoginPage,
+  RegisterPage,
+  MainLayout,
+  AuthLayout,
+} from './pages';
 import { ROUTES } from './constans';
-import { MainLayout } from './pages/MainLayout';
+import { useState } from 'react';
 
-function App() {
+export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  };
+
   return (
-    <MainLayout>
-      <Routes>
+    <Routes>
+      <Route element={<AuthLayout />}>
+        <Route path={ROUTES.LOGIN} element={<LoginPage onLogin={handleLogin} />} />
+        <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+      </Route>
+
+      <Route element={<MainLayout isAuth={isAuthenticated} redirectPath={ROUTES.LOGIN} />}>
         <Route path={ROUTES.TODO_LIST} element={<TodoListPage />} />
-        <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
-        <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
-      </Routes>
-    </MainLayout>
+        <Route path={ROUTES.PROFILE} element={<ProfilePage onLogout={handleLogout} />} />
+      </Route>
+
+      <Route path={ROUTES.NOT_FOUND} element={<Navigate to={ROUTES.TODO_LIST} replace />} />
+    </Routes>
   );
 }
-
-export default App;
