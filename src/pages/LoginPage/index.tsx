@@ -3,6 +3,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES, AUTH_VALIDATION_LOGIN, AUTH_VALIDATION_PASSWORD } from '../../constans';
 import type { Rule } from 'antd/es/form';
+import type { FormProps } from 'antd';
 
 const { Link, Text, Title } = Typography;
 
@@ -22,8 +23,8 @@ export default function LoginPage({ onLogin }: Props) {
     navigate(ROUTES.TODO_LIST);
   };
 
-  const onFinishFailed = () => {
-    message.error('Пожалуйста, проверьте введенные данные');
+  const onFinishFailed: FormProps['onFinishFailed'] = (error) => {
+    message.error(error.message);
   };
 
   const loginValidationRules: Rule[] = [

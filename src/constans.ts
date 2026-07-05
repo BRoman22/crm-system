@@ -5,7 +5,9 @@ export const FILTER_LABELS: { [key: string]: string } = {
 };
 
 export const ENDPOINTS: { [key: string]: string } = {
-  todos: 'todos',
+  TODOS: 'todos',
+  SIGNIN: 'auth/signin',
+  SIGNUP: 'auth/signup',
 };
 
 export const ROUTES: { [key: string]: string } = {
@@ -61,15 +63,14 @@ export const TODOS_VALIDATION_TITLE: Validation = {
   MAX_LENGTH_MESSAGE: `Максимальная длина ${TODOS_TITLE_MAX_LENGTH} символов`,
 };
 
-const AUTH_NAME_MIN_LENGTH = 1;
-const AUTH_NAME_MAX_LENGTH = 60;
-export const AUTH_VALIDATION_NAME: Validation = {
-  MIN_LENGTH: AUTH_NAME_MIN_LENGTH,
-  MAX_LENGTH: AUTH_NAME_MAX_LENGTH,
-  REQUIRED_MESSAGE: 'Пожалуйста, введите ваше имя!',
-  ONLY_SPACES_MESSAGE: 'Поле не может состоять только из пробелов',
-  MIN_LENGTH_MESSAGE: `Имя должно содержать минимум ${AUTH_NAME_MIN_LENGTH} символа`,
-  MAX_LENGTH_MESSAGE: `Имя должно содержать максимум ${AUTH_NAME_MAX_LENGTH} символов`,
+export const AUTH_VALIDATION_USERNAME: {
+  PATTERN: RegExp;
+  CORRECT_USERNAME_MESSAGE: string;
+  REQUIRED_MESSAGE: string;
+} = {
+  PATTERN: /^[a-zA-Zа-яА-ЯёЁ]{1,60}$/,
+  CORRECT_USERNAME_MESSAGE: 'от 1 до 60 символов русского/латинского алфавита',
+  REQUIRED_MESSAGE: 'Пожалуйста, введите ваше имя',
 };
 
 const AUTH_LOGIN_MIN_LENGTH = 2;
@@ -77,7 +78,7 @@ const AUTH_LOGIN_MAX_LENGTH = 60;
 export const AUTH_VALIDATION_LOGIN: Validation = {
   MIN_LENGTH: AUTH_LOGIN_MIN_LENGTH,
   MAX_LENGTH: AUTH_LOGIN_MAX_LENGTH,
-  REQUIRED_MESSAGE: 'Пожалуйста, введите ваш логин!',
+  REQUIRED_MESSAGE: 'Пожалуйста, введите ваш логин',
   ONLY_SPACES_MESSAGE: 'Поле не может состоять только из пробелов',
   MIN_LENGTH_MESSAGE: `Логин должен содержать минимум ${AUTH_LOGIN_MIN_LENGTH} символа`,
   MAX_LENGTH_MESSAGE: `Логин должен содержать максимум ${AUTH_LOGIN_MAX_LENGTH} символов`,
@@ -85,21 +86,49 @@ export const AUTH_VALIDATION_LOGIN: Validation = {
 
 const AUTH_PASSWORD_MIN_LENGTH = 6;
 const AUTH_PASSWORD_MAX_LENGTH = 60;
-export const AUTH_VALIDATION_PASSWORD: Validation = {
+export const AUTH_VALIDATION_PASSWORD: Validation & {
+  CONFIRM_PASSWORD_REQUIRED_MESSAGE: string;
+  CONFIRM_PASSWORD_MESSAGE: string;
+} = {
   MIN_LENGTH: AUTH_PASSWORD_MIN_LENGTH,
   MAX_LENGTH: AUTH_PASSWORD_MAX_LENGTH,
-  REQUIRED_MESSAGE: 'Пожалуйста, введите ваш пароль!',
+  REQUIRED_MESSAGE: 'Пожалуйста, введите ваш пароль',
   ONLY_SPACES_MESSAGE: 'Поле не может состоять только из пробелов',
   MIN_LENGTH_MESSAGE: `Пароль должен содержать минимум ${AUTH_PASSWORD_MIN_LENGTH} символа`,
   MAX_LENGTH_MESSAGE: `Пароль должен содержать максимум ${AUTH_PASSWORD_MAX_LENGTH} символов`,
+  CONFIRM_PASSWORD_REQUIRED_MESSAGE: 'Пожалуйста, повторите пароль',
+  CONFIRM_PASSWORD_MESSAGE: 'Пароли не совпадают',
 };
 
 export const AUTH_VALIDATION_EMAIL: { [key: string]: string } = {
-  REQUIRED_MESSAGE: 'Пожалуйста, введите ваш почтовый адрес!',
-  CORRECT_EMAIL_MESSAGE: 'Пожалуйста, введите корректный email адрес!',
+  REQUIRED_MESSAGE: 'Пожалуйста, введите ваш почтовый адрес',
+  CORRECT_EMAIL_MESSAGE: 'Пожалуйста, введите корректный email адрес',
 };
 
-export const AUTH_VALIDATION_PHONE: { [key: string]: string } = {
-  REQUIRED_MESSAGE: 'Пожалуйста, введите ваш номер телефона!',
+export const AUTH_VALIDATION_PHONE: {
+  PATTERN: RegExp;
+  REQUIRED_MESSAGE: string;
+  CORRECT_PHONE_MESSAGE: string;
+} = {
+  PATTERN: /^\+7\d{10}$/,
+  REQUIRED_MESSAGE: 'Пожалуйста, введите ваш номер телефона',
   CORRECT_PHONE_MESSAGE: 'Введите номер в формате +7XXXXXXXXXX (10 цифр после +7)',
+};
+
+export const HTTP_STATUS_CODES: { [key: string]: number } = {
+  OK: 200,
+  CREATED: 201,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  INTERNAL_SERVER_ERROR: 500,
+};
+
+export const REGISTRATION_MESSAGES: Record<number, string> = {
+  [HTTP_STATUS_CODES.OK]: 'Вы успешно зарегистрированы',
+  [HTTP_STATUS_CODES.CONFLICT]: 'Пользователь с таким логином уже существует',
+  [HTTP_STATUS_CODES.BAD_REQUEST]: 'Ошибка при регистрации. Пожалуйста, попробуйте еще раз.',
+  [HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR]: 'Ошибка сервера. Пожалуйста, попробуйте позже.',
 };

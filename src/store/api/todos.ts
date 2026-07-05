@@ -9,13 +9,13 @@ export const todosApi = createApi({
   endpoints: (build) => ({
     getTodos: build.query<MetaResponse<Todo, TodoInfo>, TodoInfoFilters>({
       query: (filter = 'all') => ({
-        url: ENDPOINTS.todos,
+        url: ENDPOINTS.TODOS,
         params: { filter },
       }),
     }),
     createTodo: build.mutation<MetaResponse<Todo, TodoInfo>, Pick<Todo, 'title' | 'isDone'>>({
       query: (body) => ({
-        url: ENDPOINTS.todos,
+        url: ENDPOINTS.TODOS,
         method: 'POST',
         body,
       }),
@@ -25,14 +25,14 @@ export const todosApi = createApi({
       { id: number; body: Pick<Todo, 'title' | 'isDone'> }
     >({
       query: ({ id, body }) => ({
-        url: `${ENDPOINTS.todos}/${id}`,
+        url: `${ENDPOINTS.TODOS}/${id}`,
         method: 'PUT',
         body,
       }),
     }),
     deleteTodo: build.mutation<void, number>({
       query: (id) => ({
-        url: `${ENDPOINTS.todos}/${id}`,
+        url: `${ENDPOINTS.TODOS}/${id}`,
         method: 'DELETE',
       }),
     }),

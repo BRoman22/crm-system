@@ -1,6 +1,10 @@
 import { Form, Input, Button, Typography, message, Space } from 'antd';
+import type { FormProps } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import type { UserRegistration } from '../../types';
 import type { Rule } from 'antd/es/form';
+import { useSignUpMutation } from '../../store/api/user';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import {
   UserOutlined,
   LockOutlined,
@@ -10,42 +14,66 @@ import {
 } from '@ant-design/icons';
 import {
   ROUTES,
-  AUTH_VALIDATION_NAME,
+  AUTH_VALIDATION_USERNAME,
   AUTH_VALIDATION_LOGIN,
   AUTH_VALIDATION_PASSWORD,
   AUTH_VALIDATION_EMAIL,
   AUTH_VALIDATION_PHONE,
+  REGISTRATION_MESSAGES,
+  HTTP_STATUS_CODES,
 } from '../../constans';
 
 const { Link, Text, Title } = Typography;
 
+interface UserRegistrationWithConfirm extends UserRegistration {
+  confirmPassword: string;
+}
+
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const [signUp] = useSignUpMutation();
 
-  const onFinish = (values: { username: string; password: string; remember: boolean }) => {
-    console.log('Register values:', values);
-    message.success('Регистрация выполнена успешно!');
-    navigate(ROUTES.LOGIN);
+  const onFinish = async (values: UserRegistrationWithConfirm) => {
+    const { confirmPassword: _, ...data } = values;
+
+    try {
+      await signUp(data).unwrap();
+
+      message.success(REGISTRATION_MESSAGES[HTTP_STATUS_CODES.CREATED]);
+      navigate(ROUTES.LOGIN);
+    } catch (err) {
+      const error = err as FetchBaseQueryError & { data: string };
+
+      if (
+        error.status === 'PARSING_ERROR' &&
+        error.originalStatus === HTTP_STATUS_CODES.BAD_REQUEST
+      ) {
+        message.error(REGISTRATION_MESSAGES[error.originalStatus]);
+      }
+
+      if (error.status === 'PARSING_ERROR' && error.originalStatus === HTTP_STATUS_CODES.CONFLICT) {
+        message.error(REGISTRATION_MESSAGES[error.originalStatus]);
+      }
+
+      if (
+        error.status === 'PARSING_ERROR' &&
+        error.originalStatus === HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR
+      ) {
+        message.error(REGISTRATION_MESSAGES[error.originalStatus]);
+      }
+    }
   };
 
-  const onFinishFailed = () => {
-    message.error('Пожалуйста, проверьте введенные данные');
+  const onFinishFailed: FormProps['onFinishFailed'] = (error) => {
+    message.error(error.message);
   };
 
-  const nameValidationRules: Rule[] = [
-    { required: true, message: AUTH_VALIDATION_NAME.REQUIRED_MESSAGE },
+  const usernameValidationRules: Rule[] = [
+    { required: true, message: AUTH_VALIDATION_USERNAME.REQUIRED_MESSAGE },
     {
-      min: AUTH_VALIDATION_NAME.MIN_LENGTH,
-      message: AUTH_VALIDATION_NAME.MIN_LENGTH_MESSAGE,
-    },
-    {
-      max: AUTH_VALIDATION_NAME.MAX_LENGTH,
-      message: AUTH_VALIDATION_NAME.MAX_LENGTH_MESSAGE,
-    },
-    {
-      whitespace: true,
-      message: AUTH_VALIDATION_NAME.ONLY_SPACES_MESSAGE,
+      pattern: AUTH_VALIDATION_USERNAME.PATTERN,
+      message: AUTH_VALIDATION_USERNAME.CORRECT_USERNAME_MESSAGE,
     },
   ];
 
@@ -82,13 +110,13 @@ export default function RegisterPage() {
   ];
 
   const confirmPasswordValidationRules: Rule[] = [
-    { required: true, message: 'Пожалуйста, подтвердите пароль!' },
+    { required: true, message: AUTH_VALIDATION_PASSWORD.CONFIRM_PASSWORD_REQUIRED_MESSAGE },
     ({ getFieldValue }) => ({
       validator(_, value) {
         if (!value || getFieldValue('password') === value) {
           return Promise.resolve();
         }
-        return Promise.reject(new Error('Пароли не совпадают!'));
+        return Promise.reject(new Error(AUTH_VALIDATION_PASSWORD.CONFIRM_PASSWORD_MESSAGE));
       },
     }),
   ];
@@ -101,7 +129,7 @@ export default function RegisterPage() {
   const phoneValidationRules: Rule[] = [
     { required: true, message: AUTH_VALIDATION_PHONE.REQUIRED_MESSAGE },
     {
-      pattern: /^\+7\d{10}$/,
+      pattern: AUTH_VALIDATION_PHONE.PATTERN,
       message: AUTH_VALIDATION_PHONE.CORRECT_PHONE_MESSAGE,
     },
   ];
@@ -123,7 +151,7 @@ export default function RegisterPage() {
         size="large"
         style={{ marginTop: 24 }}
       >
-        <Form.Item name="name" rules={nameValidationRules}>
+        <Form.Item name="username" rules={usernameValidationRules}>
           <Input
             prefix={<IdcardOutlined style={{ color: '#bfbfbf' }} />}
             placeholder="Имя пользователя"
@@ -167,7 +195,7 @@ export default function RegisterPage() {
           />
         </Form.Item>
 
-        <Form.Item name="phone" rules={phoneValidationRules}>
+        <Form.Item name="phoneNumber" rules={phoneValidationRules}>
           <Input
             prefix={<PhoneOutlined style={{ color: '#bfbfbf' }} />}
             placeholder="Телефон"

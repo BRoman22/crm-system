@@ -2,18 +2,24 @@ import { configureStore, bindActionCreators } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import todosSlice from './slices/todos';
+import userSlice from './slices/user';
 import { todosApi } from './api/todos';
+import { userApi } from './api/user';
 
 export const store = configureStore({
   reducer: {
     todos: todosSlice.reducer,
+    user: userSlice.reducer,
     [todosApi.reducerPath]: todosApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([todosApi.middleware]),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat([todosApi.middleware, userApi.middleware]),
 });
 
 const actions = {
   ...todosSlice.actions,
+  ...userSlice.actions,
 };
 
 export type RootState = ReturnType<typeof store.getState>;

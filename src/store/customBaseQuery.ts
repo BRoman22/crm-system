@@ -7,6 +7,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: VITE_API_URL,
   prepareHeaders: (headers) => {
     headers.set('Accept', 'application/json');
+    // headers.set('Bearer', `Bearer ${localStorage.getItem('token')}`);
     return headers;
   },
 });
