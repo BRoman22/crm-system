@@ -25,26 +25,22 @@ const initialState: AuthState = {
   authStatus: 'idle',
 };
 
-const loadTokensFromStorage = (): Pick<AuthState, 'accessToken' | 'refreshToken'> => {
+const loadTokenFromStorage = (): Pick<AuthState, 'refreshToken'> => {
   try {
-    const accessToken = localStorage.getItem('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
     return {
-      accessToken: accessToken || null,
       refreshToken: refreshToken || null,
     };
   } catch {
-    return { accessToken: null, refreshToken: null };
+    return { refreshToken: null };
   }
 };
 
-const saveTokensToStorage = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem('accessToken', accessToken);
+const saveTokenToStorage = (refreshToken: string) => {
   localStorage.setItem('refreshToken', refreshToken);
 };
 
-const clearTokensFromStorage = () => {
-  localStorage.removeItem('accessToken');
+const clearTokenFromStorage = () => {
   localStorage.removeItem('refreshToken');
 };
 
@@ -52,7 +48,7 @@ export const userSlice = createSlice({
   name: 'user',
   initialState: {
     ...initialState,
-    ...loadTokensFromStorage(),
+    ...loadTokenFromStorage(),
   },
   reducers: {
     setCredentials: (state, action: PayloadAction<Token>) => {
@@ -60,7 +56,7 @@ export const userSlice = createSlice({
       state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
       state.authStatus = 'succeeded';
-      saveTokensToStorage(action.payload.accessToken, action.payload.refreshToken);
+      saveTokenToStorage(action.payload.refreshToken);
     },
     logout: (state) => {
       state.user = null;
@@ -68,7 +64,7 @@ export const userSlice = createSlice({
       state.refreshToken = null;
       state.isAuthenticated = false;
       state.authStatus = 'failed';
-      clearTokensFromStorage();
+      clearTokenFromStorage();
     },
     setAuthChecking: (state) => {
       state.authStatus = 'loading';

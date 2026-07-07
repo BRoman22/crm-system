@@ -139,6 +139,6 @@ export const REGISTRATION_MESSAGES: { [key: string]: string } = {
 export const LOGIN_MESSAGES: { [key: string]: string } = {
   [HTTP_STATUS_CODES.OK]: 'Вы успешно вошли в систему',
   [HTTP_STATUS_CODES.BAD_REQUEST]: 'Ошибка при входе в систему. Пожалуйста, попробуйте еще раз.',
-  [HTTP_STATUS_CODES.UNAUTHORIZED]: 'Неправильные логин или пароль',
+  [HTTP_STATUS_CODES.UNAUTHORIZED]: 'Неверные логин или пароль',
   [HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR]: 'Ошибка сервера. Пожалуйста, попробуйте позже.',
 };

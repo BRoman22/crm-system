@@ -114,7 +114,7 @@ export default function RegisterPage() {
   ];
 
   const phoneValidationRules: Rule[] = [
-    { required: true, message: AUTH_VALIDATION_PHONE.REQUIRED_MESSAGE },
+    { required: false, message: AUTH_VALIDATION_PHONE.REQUIRED_MESSAGE },
     {
       pattern: AUTH_VALIDATION_PHONE.PATTERN,
       message: AUTH_VALIDATION_PHONE.CORRECT_PHONE_MESSAGE,
