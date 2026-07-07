@@ -1,7 +1,7 @@
 import { AddTodo, Todolist, TodoStatusFilter } from '../../components';
 import type { TodoInfoFilters } from '../../types';
 import { useEffect, useState } from 'react';
-import { notification } from 'antd';
+import { notification, Spin } from 'antd';
 import { TODOS_ERROR_MESSAGES, TODOS_AUTO_REFRESH_INTERVAL } from '../../constans';
 import { useGetTodosQuery } from '../../store/api/todos';
 
@@ -28,6 +28,14 @@ export default function TodoListPage() {
       <Todolist todos={data.data} fetchTodos={refetch} />
     </>
   ) : (
-    <div>Загрузка...</div>
+    <Spin
+      size="large"
+      style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+      }}
+    />
   );
 }

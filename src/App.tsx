@@ -1,5 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ROUTES } from './constans';
+import { useAppDispatch, useAppSelector } from './store';
+import { useEffect } from 'react';
+import { logout, setCredentials, setAuthChecking } from './store/slices/user';
+import { useRefreshMutation } from './store/api/user';
+import { Spin } from 'antd';
 import {
   TodoListPage,
   ProfilePage,
@@ -10,6 +15,45 @@ import {
 } from './pages';
 
 export default function App() {
+  const dispatch = useAppDispatch();
+  const authStatus = useAppSelector((state) => state.user.authStatus);
+  const refreshToken = useAppSelector((state) => state.user.refreshToken);
+  const [refresh] = useRefreshMutation();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (!refreshToken) {
+        dispatch(logout());
+        return;
+      }
+
+      dispatch(setAuthChecking());
+
+      try {
+        const result = await refresh({ refreshToken }).unwrap();
+        dispatch(setCredentials(result));
+      } catch {
+        dispatch(logout());
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  if (authStatus === 'idle' || authStatus === 'loading') {
+    return (
+      <Spin
+        size="large"
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+      />
+    );
+  }
+
   return (
     <Routes>
       <Route element={<AuthLayout />}>

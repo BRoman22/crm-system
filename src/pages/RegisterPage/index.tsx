@@ -75,16 +75,8 @@ export default function RegisterPage() {
   const loginValidationRules: Rule[] = [
     { required: true, message: AUTH_VALIDATION_LOGIN.REQUIRED_MESSAGE },
     {
-      min: AUTH_VALIDATION_LOGIN.MIN_LENGTH,
-      message: AUTH_VALIDATION_LOGIN.MIN_LENGTH_MESSAGE,
-    },
-    {
-      max: AUTH_VALIDATION_LOGIN.MAX_LENGTH,
-      message: AUTH_VALIDATION_LOGIN.MAX_LENGTH_MESSAGE,
-    },
-    {
-      whitespace: true,
-      message: AUTH_VALIDATION_LOGIN.ONLY_SPACES_MESSAGE,
+      pattern: AUTH_VALIDATION_LOGIN.PATTERN,
+      message: AUTH_VALIDATION_LOGIN.CORRECT_LOGIN_MESSAGE,
     },
   ];
 

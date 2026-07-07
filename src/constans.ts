@@ -77,15 +77,14 @@ export const AUTH_VALIDATION_USERNAME: {
   REQUIRED_MESSAGE: 'Пожалуйста, введите ваше имя',
 };
 
-const AUTH_LOGIN_MIN_LENGTH = 2;
-const AUTH_LOGIN_MAX_LENGTH = 60;
-export const AUTH_VALIDATION_LOGIN: Validation = {
-  MIN_LENGTH: AUTH_LOGIN_MIN_LENGTH,
-  MAX_LENGTH: AUTH_LOGIN_MAX_LENGTH,
+export const AUTH_VALIDATION_LOGIN: {
+  PATTERN: RegExp;
+  CORRECT_LOGIN_MESSAGE: string;
+  REQUIRED_MESSAGE: string;
+} = {
+  PATTERN: /^[A-Za-z]{2,60}$/,
+  CORRECT_LOGIN_MESSAGE: 'от 2 до 60 символов латинского алфавита',
   REQUIRED_MESSAGE: 'Пожалуйста, введите ваш логин',
-  ONLY_SPACES_MESSAGE: 'Поле не может состоять только из пробелов',
-  MIN_LENGTH_MESSAGE: `Логин должен содержать минимум ${AUTH_LOGIN_MIN_LENGTH} символа`,
-  MAX_LENGTH_MESSAGE: `Логин должен содержать максимум ${AUTH_LOGIN_MAX_LENGTH} символов`,
 };
 
 const AUTH_PASSWORD_MIN_LENGTH = 6;

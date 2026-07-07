@@ -6,6 +6,7 @@ interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
+  authStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 const initialState: AuthState = {
@@ -21,6 +22,7 @@ const initialState: AuthState = {
   accessToken: null,
   refreshToken: null,
   isAuthenticated: false,
+  authStatus: 'idle',
 };
 
 const loadTokensFromStorage = (): Pick<AuthState, 'accessToken' | 'refreshToken'> => {
@@ -57,7 +59,7 @@ export const userSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
-
+      state.authStatus = 'succeeded';
       saveTokensToStorage(action.payload.accessToken, action.payload.refreshToken);
     },
     logout: (state) => {
@@ -65,7 +67,11 @@ export const userSlice = createSlice({
       state.accessToken = null;
       state.refreshToken = null;
       state.isAuthenticated = false;
+      state.authStatus = 'failed';
       clearTokensFromStorage();
+    },
+    setAuthChecking: (state) => {
+      state.authStatus = 'loading';
     },
     setUser: (state, action: PayloadAction<Profile>) => {
       state.user = action.payload;
@@ -73,5 +79,5 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setCredentials, logout, setUser } = userSlice.actions;
+export const { setCredentials, logout, setAuthChecking, setUser } = userSlice.actions;
 export default userSlice;

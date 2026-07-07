@@ -21,13 +21,15 @@ export const userApi = createApi({
         method: 'POST',
         body,
       }),
-      async onQueryStarted(_, { queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          setCredentials({
-            accessToken: data.accessToken,
-            refreshToken: data.refreshToken,
-          });
+          dispatch(
+            setCredentials({
+              accessToken: data.accessToken,
+              refreshToken: data.refreshToken,
+            })
+          );
         } catch (error) {
           console.error('Login error:', error);
         }
@@ -38,20 +40,27 @@ export const userApi = createApi({
         url: ENDPOINTS.LOGOUT,
         method: 'POST',
       }),
-      async onQueryStarted(_, { queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
         } finally {
-          logout();
+          dispatch(logout());
         }
       },
     }),
+    refresh: build.mutation<Token, { refreshToken: string }>({
+      query: (body) => ({
+        url: ENDPOINTS.REFRESH,
+        method: 'POST',
+        body,
+      }),
+    }),
     getProfile: build.query<Profile, void>({
       query: () => ENDPOINTS.PROFILE,
-      async onQueryStarted(_, { queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          setUser(data);
+          dispatch(setUser(data));
         } catch (error) {
           console.error(error);
         }
@@ -63,10 +72,10 @@ export const userApi = createApi({
         method: 'PUT',
         body,
       }),
-      async onQueryStarted(_, { queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          setUser(data);
+          dispatch(setUser(data));
         } catch (error) {
           console.error(error);
         }
@@ -82,4 +91,12 @@ export const userApi = createApi({
   }),
 });
 
-export const { useSignUpMutation, useSignInMutation, useLogoutMutation } = userApi;
+export const {
+  useSignUpMutation,
+  useSignInMutation,
+  useLogoutMutation,
+  useRefreshMutation,
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+  useChangePasswordMutation,
+} = userApi;
