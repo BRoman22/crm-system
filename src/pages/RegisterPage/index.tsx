@@ -43,24 +43,19 @@ export default function RegisterPage() {
       message.success(REGISTRATION_MESSAGES[HTTP_STATUS_CODES.CREATED]);
       navigate(ROUTES.LOGIN);
     } catch (err) {
-      const error = err as FetchBaseQueryError & { data: string };
+      const error = err as FetchBaseQueryError;
 
       if (
         error.status === 'PARSING_ERROR' &&
-        error.originalStatus === HTTP_STATUS_CODES.BAD_REQUEST
+        [
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          HTTP_STATUS_CODES.CONFLICT,
+          HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+        ].includes(error.originalStatus)
       ) {
         message.error(REGISTRATION_MESSAGES[error.originalStatus]);
-      }
-
-      if (error.status === 'PARSING_ERROR' && error.originalStatus === HTTP_STATUS_CODES.CONFLICT) {
-        message.error(REGISTRATION_MESSAGES[error.originalStatus]);
-      }
-
-      if (
-        error.status === 'PARSING_ERROR' &&
-        error.originalStatus === HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR
-      ) {
-        message.error(REGISTRATION_MESSAGES[error.originalStatus]);
+      } else {
+        message.error('Что-то пошло не так');
       }
     }
   };

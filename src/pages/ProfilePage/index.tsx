@@ -1,7 +1,7 @@
-interface Props {
-  onLogout: () => void;
-}
+import { useLogoutMutation } from '../../store/api/user';
 
-export default function ProfilePage({ onLogout }: Props) {
-  return <h1 onClick={onLogout}>привет</h1>;
+export default function ProfilePage() {
+  const [logout] = useLogoutMutation();
+
+  return <h1 onClick={() => logout()}>привет</h1>;
 }

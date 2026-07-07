@@ -1,26 +1,49 @@
 import { Form, Input, Button, Checkbox, Typography, message, Space } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES, AUTH_VALIDATION_LOGIN, AUTH_VALIDATION_PASSWORD } from '../../constans';
 import type { Rule } from 'antd/es/form';
 import type { FormProps } from 'antd';
+import { useSignInMutation } from '../../store/api/user';
+import type { AuthData } from '../../types';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import {
+  ROUTES,
+  AUTH_VALIDATION_LOGIN,
+  AUTH_VALIDATION_PASSWORD,
+  HTTP_STATUS_CODES,
+  LOGIN_MESSAGES,
+} from '../../constans';
 
 const { Link, Text, Title } = Typography;
 
-interface Props {
-  onLogin: () => void;
-}
-
-export default function LoginPage({ onLogin }: Props) {
+export default function LoginPage() {
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const [signIn] = useSignInMutation();
 
-  const onFinish = (values: { username: string; password: string; remember: boolean }) => {
-    console.log('Login values:', values);
-    // message.success('Вход выполнен успешно!');
+  const onFinish = async (values: AuthData & { remember: boolean }) => {
+    const { remember: _, ...data } = values;
 
-    onLogin();
-    navigate(ROUTES.TODO_LIST);
+    try {
+      await signIn(data).unwrap();
+      navigate(ROUTES.TODO_LIST);
+      message.success(LOGIN_MESSAGES[HTTP_STATUS_CODES.OK]);
+    } catch (err) {
+      const error = err as FetchBaseQueryError;
+
+      if (
+        error.status === 'PARSING_ERROR' &&
+        [
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          HTTP_STATUS_CODES.UNAUTHORIZED,
+          HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+        ].includes(error.originalStatus)
+      ) {
+        message.error(LOGIN_MESSAGES[error.originalStatus]);
+      } else {
+        message.error('Что-то пошло не так');
+      }
+    }
   };
 
   const onFinishFailed: FormProps['onFinishFailed'] = (error) => {

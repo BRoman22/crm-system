@@ -8,6 +8,8 @@ export const ENDPOINTS: { [key: string]: string } = {
   TODOS: 'todos',
   SIGNIN: 'auth/signin',
   SIGNUP: 'auth/signup',
+  REFRESH: 'auth/refresh',
+  LOGOUT: '/user/logout',
 };
 
 export const ROUTES: { [key: string]: string } = {
@@ -126,9 +128,16 @@ export const HTTP_STATUS_CODES: { [key: string]: number } = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
-export const REGISTRATION_MESSAGES: Record<number, string> = {
+export const REGISTRATION_MESSAGES: { [key: string]: string } = {
   [HTTP_STATUS_CODES.OK]: 'Вы успешно зарегистрированы',
   [HTTP_STATUS_CODES.CONFLICT]: 'Пользователь с таким логином уже существует',
   [HTTP_STATUS_CODES.BAD_REQUEST]: 'Ошибка при регистрации. Пожалуйста, попробуйте еще раз.',
+  [HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR]: 'Ошибка сервера. Пожалуйста, попробуйте позже.',
+};
+
+export const LOGIN_MESSAGES: { [key: string]: string } = {
+  [HTTP_STATUS_CODES.OK]: 'Вы успешно вошли в систему',
+  [HTTP_STATUS_CODES.BAD_REQUEST]: 'Ошибка при входе в систему. Пожалуйста, попробуйте еще раз.',
+  [HTTP_STATUS_CODES.UNAUTHORIZED]: 'Неправильные логин или пароль',
   [HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR]: 'Ошибка сервера. Пожалуйста, попробуйте позже.',
 };

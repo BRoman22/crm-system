@@ -1,17 +1,19 @@
 import { Layout, Menu } from 'antd';
 import { Outlet, useNavigate, Navigate } from 'react-router-dom';
 import { NAVIGATION_MENU } from '../../constans';
+import { useAppSelector } from '../../store';
 
 interface Props {
-  isAuth: boolean;
   redirectPath: string;
 }
 
-export default function MainLayout({ isAuth, redirectPath }: Props) {
-  const { Sider, Content } = Layout;
-  const navigate = useNavigate();
+const { Sider, Content } = Layout;
 
-  if (!isAuth) {
+export default function MainLayout({ redirectPath }: Props) {
+  const navigate = useNavigate();
+  const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated);
+
+  if (!isAuthenticated) {
     return <Navigate to={redirectPath} replace />;
   }
 

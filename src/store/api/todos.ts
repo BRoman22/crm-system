@@ -1,11 +1,11 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import customBaseQuery from '../customBaseQuery';
+import baseQueryWithReauth from '../baseQueryWithReauth';
 import { ENDPOINTS } from '../../constans';
 import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../types';
 
 export const todosApi = createApi({
   reducerPath: 'todosApi',
-  baseQuery: customBaseQuery,
+  baseQuery: baseQueryWithReauth,
   endpoints: (build) => ({
     getTodos: build.query<MetaResponse<Todo, TodoInfo>, TodoInfoFilters>({
       query: (filter = 'all') => ({
