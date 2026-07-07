@@ -67,8 +67,11 @@ export const userSlice = createSlice({
       state.isAuthenticated = false;
       clearTokensFromStorage();
     },
+    setUser: (state, action: PayloadAction<Profile>) => {
+      state.user = action.payload;
+    },
   },
 });
 
-export const { setCredentials, logout } = userSlice.actions;
+export const { setCredentials, logout, setUser } = userSlice.actions;
 export default userSlice;

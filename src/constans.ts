@@ -10,6 +10,8 @@ export const ENDPOINTS: { [key: string]: string } = {
   SIGNUP: 'auth/signup',
   REFRESH: 'auth/refresh',
   LOGOUT: '/user/logout',
+  PROFILE: '/user/profile',
+  RESET_PASSWORD: '/user/profile/reset-password',
 };
 
 export const ROUTES: { [key: string]: string } = {
