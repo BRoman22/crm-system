@@ -1,4 +1,4 @@
-import { Form, Input, Button, Typography, message, Space, Spin } from 'antd';
+import { Form, Input, Button, Typography, message, Space, Spin, Result } from 'antd';
 import type { FormProps } from 'antd';
 import type { Rule } from 'antd/es/form';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
@@ -25,7 +25,11 @@ type ProfileFormValues = Pick<Profile, 'username' | 'email' | 'phoneNumber'>;
 export default function ProfilePage() {
   const [form] = Form.useForm();
 
-  const { data: profile, isLoading: isProfileLoading } = useGetProfileQuery();
+  const {
+    data: profile,
+    isLoading: isProfileLoading,
+    refetch: refetchProfile,
+  } = useGetProfileQuery();
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
@@ -62,7 +66,7 @@ export default function ProfilePage() {
   };
 
   const onFinishFailed: FormProps['onFinishFailed'] = (error) => {
-    message.error(error.errorFields[0]?.errors[0] ?? 'Проверьте правильность заполнения полей');
+    message.error(error.message);
   };
 
   const handleLogout = async () => {
@@ -104,6 +108,24 @@ export default function ProfilePage() {
           left: '50%',
           transform: 'translate(-50%, -50%)',
         }}
+      />
+    );
+  }
+
+  if (!profile) {
+    return (
+      <Result
+        status="error"
+        title="Не удалось загрузить профиль"
+        subTitle="Проверьте соединение с интернетом и попробуйте снова"
+        extra={[
+          <Button type="primary" onClick={() => refetchProfile()}>
+            Повторить попытку
+          </Button>,
+          <Button key="logout" danger loading={isLoggingOut} onClick={handleLogout}>
+            Выйти
+          </Button>,
+        ]}
       />
     );
   }

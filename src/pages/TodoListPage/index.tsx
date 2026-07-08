@@ -8,7 +8,7 @@ import { useGetTodosQuery } from '../../store/api/todos';
 export default function TodoListPage() {
   const [filter, setFilter] = useState<TodoInfoFilters>('all');
 
-  const { data, error } = useGetTodosQuery(filter, {
+  const { data: todos, error } = useGetTodosQuery(filter, {
     pollingInterval: TODOS_AUTO_REFRESH_INTERVAL,
   });
 
@@ -21,11 +21,11 @@ export default function TodoListPage() {
     }
   }, [error]);
 
-  return data ? (
+  return todos ? (
     <>
       <AddTodo />
-      <TodoStatusFilter statuses={data.info} filter={filter} setFilter={setFilter} />
-      <Todolist todos={data.data} />
+      <TodoStatusFilter statuses={todos.info} filter={filter} setFilter={setFilter} />
+      <Todolist todos={todos.data} />
     </>
   ) : (
     <Spin

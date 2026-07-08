@@ -1,5 +1,5 @@
 import { Layout, Menu } from 'antd';
-import { Outlet, useNavigate, Navigate } from 'react-router-dom';
+import { Outlet, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import { NAVIGATION_MENU } from '../../constans';
 import { useAppSelector } from '../../store';
 
@@ -11,6 +11,7 @@ const { Sider, Content } = Layout;
 
 export default function MainLayout({ redirectPath }: Props) {
   const navigate = useNavigate();
+  const location = useLocation();
   const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated);
 
   if (!isAuthenticated) {
@@ -42,12 +43,15 @@ export default function MainLayout({ redirectPath }: Props) {
     }
   };
 
+  const selectedKey =
+    NAVIGATION_MENU.find((item) => item.path === location.pathname)?.key ?? NAVIGATION_MENU[0].key;
+
   return (
     <Layout style={layoutStyle}>
       <Sider width="20%" style={siderStyle}>
         <Menu
           mode="inline"
-          defaultSelectedKeys={[NAVIGATION_MENU[0].key]}
+          defaultSelectedKeys={[selectedKey]}
           items={NAVIGATION_MENU}
           onClick={handleMenuClick}
         />
