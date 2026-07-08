@@ -4,14 +4,13 @@ import type { Todo } from '../../types';
 
 interface Props {
   todos: Todo[];
-  fetchTodos: () => void;
 }
 
-export default function TodoList({ todos, fetchTodos }: Props) {
+export default function TodoList({ todos }: Props) {
   return (
     <ul className={styles.todolist}>
       {todos.map((todo) => {
-        return <TodoItem key={todo.id} item={todo} fetchTodos={fetchTodos} />;
+        return <TodoItem key={todo.id} item={todo} />;
       })}
     </ul>
   );

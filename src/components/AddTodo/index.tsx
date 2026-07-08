@@ -1,12 +1,8 @@
 import { Button, Form, Input, notification } from 'antd';
-import { TODOS_VALIDATION_TITLE, TODOS_ERROR_MESSAGES } from '../../constans';
+import { TODOS_VALIDATION_TITLE, TODOS_MESSAGES } from '../../constans';
 import { useCreateTodoMutation } from '../../store/api/todos';
 
-interface Props {
-  fetchTodos: () => void;
-}
-
-export default function AddTodo({ fetchTodos }: Props) {
+export default function AddTodo() {
   const [createTodo] = useCreateTodoMutation();
   const [form] = Form.useForm();
   const onFinish = async (values: { title: string }) => {
@@ -16,11 +12,9 @@ export default function AddTodo({ fetchTodos }: Props) {
     } catch (error) {
       console.error(error);
       notification.error({
-        title: TODOS_ERROR_MESSAGES.TITLE,
-        description: TODOS_ERROR_MESSAGES.CREATE_TODO,
+        title: TODOS_MESSAGES.TITLE,
+        description: TODOS_MESSAGES.CREATE_TODO,
       });
-    } finally {
-      fetchTodos();
     }
   };
 

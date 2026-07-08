@@ -8,8 +8,8 @@ import type { AuthData } from '../../types';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import {
   ROUTES,
-  AUTH_VALIDATION_LOGIN,
-  AUTH_VALIDATION_PASSWORD,
+  VALIDATION_LOGIN,
+  VALIDATION_PASSWORD,
   HTTP_STATUS_CODES,
   LOGIN_MESSAGES,
 } from '../../constans';
@@ -51,26 +51,26 @@ export default function LoginPage() {
   };
 
   const loginValidationRules: Rule[] = [
-    { required: true, message: AUTH_VALIDATION_LOGIN.REQUIRED_MESSAGE },
+    { required: true, message: VALIDATION_LOGIN.REQUIRED_MESSAGE },
     {
-      pattern: AUTH_VALIDATION_LOGIN.PATTERN,
-      message: AUTH_VALIDATION_LOGIN.CORRECT_LOGIN_MESSAGE,
+      pattern: VALIDATION_LOGIN.PATTERN,
+      message: VALIDATION_LOGIN.CORRECT_LOGIN_MESSAGE,
     },
   ];
 
   const passwordValidationRules: Rule[] = [
-    { required: true, message: AUTH_VALIDATION_PASSWORD.REQUIRED_MESSAGE },
+    { required: true, message: VALIDATION_PASSWORD.REQUIRED_MESSAGE },
     {
-      min: AUTH_VALIDATION_PASSWORD.MIN_LENGTH,
-      message: AUTH_VALIDATION_PASSWORD.MIN_LENGTH_MESSAGE,
+      min: VALIDATION_PASSWORD.MIN_LENGTH,
+      message: VALIDATION_PASSWORD.MIN_LENGTH_MESSAGE,
     },
     {
-      max: AUTH_VALIDATION_PASSWORD.MAX_LENGTH,
-      message: AUTH_VALIDATION_PASSWORD.MAX_LENGTH_MESSAGE,
+      max: VALIDATION_PASSWORD.MAX_LENGTH,
+      message: VALIDATION_PASSWORD.MAX_LENGTH_MESSAGE,
     },
     {
       whitespace: true,
-      message: AUTH_VALIDATION_PASSWORD.ONLY_SPACES_MESSAGE,
+      message: VALIDATION_PASSWORD.ONLY_SPACES_MESSAGE,
     },
   ];
 

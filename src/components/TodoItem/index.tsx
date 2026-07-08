@@ -4,14 +4,13 @@ import { EditOutlined, DeleteOutlined, CheckOutlined, UndoOutlined } from '@ant-
 import type { Todo } from '../../types';
 import { useState } from 'react';
 import { useDeleteTodoMutation, useUpdateTodoMutation } from '../../store/api/todos';
-import { TODOS_VALIDATION_TITLE, TODOS_ERROR_MESSAGES } from '../../constans';
+import { TODOS_VALIDATION_TITLE, TODOS_MESSAGES } from '../../constans';
 
 interface Props {
   item: Todo;
-  fetchTodos: () => void;
 }
 
-export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Props) {
+export default function TodoItem({ item: { id, title, isDone } }: Props) {
   const [updateTodo] = useUpdateTodoMutation();
   const [deleteTodo] = useDeleteTodoMutation();
   const [isEditing, setIsEditing] = useState(false);
@@ -23,11 +22,9 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
     } catch (error) {
       console.error(error);
       notification.error({
-        title: TODOS_ERROR_MESSAGES.TITLE,
-        description: TODOS_ERROR_MESSAGES.UPDATE_STATUS,
+        title: TODOS_MESSAGES.TITLE,
+        description: TODOS_MESSAGES.UPDATE_STATUS,
       });
-    } finally {
-      fetchTodos();
     }
   }
 
@@ -37,11 +34,9 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
     } catch (error) {
       console.error(error);
       notification.error({
-        title: TODOS_ERROR_MESSAGES.TITLE,
-        description: TODOS_ERROR_MESSAGES.DELETE_TODO,
+        title: TODOS_MESSAGES.TITLE,
+        description: TODOS_MESSAGES.DELETE_TODO,
       });
-    } finally {
-      fetchTodos();
     }
   }
 
@@ -52,11 +47,9 @@ export default function TodoItem({ item: { id, title, isDone }, fetchTodos }: Pr
     } catch (error) {
       console.error(error);
       notification.error({
-        title: TODOS_ERROR_MESSAGES.TITLE,
-        description: TODOS_ERROR_MESSAGES.UPDATE_TITLE,
+        title: TODOS_MESSAGES.TITLE,
+        description: TODOS_MESSAGES.UPDATE_TITLE,
       });
-    } finally {
-      fetchTodos();
     }
   }
 

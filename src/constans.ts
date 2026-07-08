@@ -38,7 +38,7 @@ export const NAVIGATION_MENU: { key: string; label: string; path: string }[] = [
 
 export const TODOS_AUTO_REFRESH_INTERVAL: number = 5000;
 
-export const TODOS_ERROR_MESSAGES: { [key: string]: string } = {
+export const TODOS_MESSAGES: { [key: string]: string } = {
   TITLE: 'Ошибка',
   UPDATE_STATUS: 'Не удалось обновить статус задачи. Пожалуйста, попробуйте снова.',
   UPDATE_TITLE: 'Не удалось обновить задачу. Пожалуйста, попробуйте снова.',
@@ -67,7 +67,7 @@ export const TODOS_VALIDATION_TITLE: Validation = {
   MAX_LENGTH_MESSAGE: `Максимальная длина ${TODOS_TITLE_MAX_LENGTH} символов`,
 };
 
-export const AUTH_VALIDATION_USERNAME: {
+export const VALIDATION_USERNAME: {
   PATTERN: RegExp;
   CORRECT_USERNAME_MESSAGE: string;
   REQUIRED_MESSAGE: string;
@@ -77,7 +77,7 @@ export const AUTH_VALIDATION_USERNAME: {
   REQUIRED_MESSAGE: 'Пожалуйста, введите ваше имя',
 };
 
-export const AUTH_VALIDATION_LOGIN: {
+export const VALIDATION_LOGIN: {
   PATTERN: RegExp;
   CORRECT_LOGIN_MESSAGE: string;
   REQUIRED_MESSAGE: string;
@@ -87,28 +87,28 @@ export const AUTH_VALIDATION_LOGIN: {
   REQUIRED_MESSAGE: 'Пожалуйста, введите ваш логин',
 };
 
-const AUTH_PASSWORD_MIN_LENGTH = 6;
-const AUTH_PASSWORD_MAX_LENGTH = 60;
-export const AUTH_VALIDATION_PASSWORD: Validation & {
+const PASSWORD_MIN_LENGTH = 6;
+const PASSWORD_MAX_LENGTH = 60;
+export const VALIDATION_PASSWORD: Validation & {
   CONFIRM_PASSWORD_REQUIRED_MESSAGE: string;
   CONFIRM_PASSWORD_MESSAGE: string;
 } = {
-  MIN_LENGTH: AUTH_PASSWORD_MIN_LENGTH,
-  MAX_LENGTH: AUTH_PASSWORD_MAX_LENGTH,
+  MIN_LENGTH: PASSWORD_MIN_LENGTH,
+  MAX_LENGTH: PASSWORD_MAX_LENGTH,
   REQUIRED_MESSAGE: 'Пожалуйста, введите ваш пароль',
   ONLY_SPACES_MESSAGE: 'Поле не может состоять только из пробелов',
-  MIN_LENGTH_MESSAGE: `Пароль должен содержать минимум ${AUTH_PASSWORD_MIN_LENGTH} символа`,
-  MAX_LENGTH_MESSAGE: `Пароль должен содержать максимум ${AUTH_PASSWORD_MAX_LENGTH} символов`,
+  MIN_LENGTH_MESSAGE: `Пароль должен содержать минимум ${PASSWORD_MIN_LENGTH} символа`,
+  MAX_LENGTH_MESSAGE: `Пароль должен содержать максимум ${PASSWORD_MAX_LENGTH} символов`,
   CONFIRM_PASSWORD_REQUIRED_MESSAGE: 'Пожалуйста, повторите пароль',
   CONFIRM_PASSWORD_MESSAGE: 'Пароли не совпадают',
 };
 
-export const AUTH_VALIDATION_EMAIL: { [key: string]: string } = {
+export const VALIDATION_EMAIL: { [key: string]: string } = {
   REQUIRED_MESSAGE: 'Пожалуйста, введите ваш почтовый адрес',
   CORRECT_EMAIL_MESSAGE: 'Пожалуйста, введите корректный email адрес',
 };
 
-export const AUTH_VALIDATION_PHONE: {
+export const VALIDATION_PHONE: {
   PATTERN: RegExp;
   REQUIRED_MESSAGE: string;
   CORRECT_PHONE_MESSAGE: string;
@@ -140,5 +140,12 @@ export const LOGIN_MESSAGES: { [key: string]: string } = {
   [HTTP_STATUS_CODES.OK]: 'Вы успешно вошли в систему',
   [HTTP_STATUS_CODES.BAD_REQUEST]: 'Ошибка при входе в систему. Пожалуйста, попробуйте еще раз.',
   [HTTP_STATUS_CODES.UNAUTHORIZED]: 'Неверные логин или пароль',
+  [HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR]: 'Ошибка сервера. Пожалуйста, попробуйте позже.',
+};
+
+export const PROFILE_MESSAGES: { [key: string]: string } = {
+  [HTTP_STATUS_CODES.OK]: 'Профиль успешно обновлен',
+  [HTTP_STATUS_CODES.BAD_REQUEST]: 'Ошибка при обновлении профиля. Пожалуйста, попробуйте еще раз.',
+  [HTTP_STATUS_CODES.NOT_FOUND]: 'Профиль не найден',
   [HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR]: 'Ошибка сервера. Пожалуйста, попробуйте позже.',
 };

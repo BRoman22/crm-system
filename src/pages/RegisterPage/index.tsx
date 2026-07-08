@@ -14,11 +14,11 @@ import {
 } from '@ant-design/icons';
 import {
   ROUTES,
-  AUTH_VALIDATION_USERNAME,
-  AUTH_VALIDATION_LOGIN,
-  AUTH_VALIDATION_PASSWORD,
-  AUTH_VALIDATION_EMAIL,
-  AUTH_VALIDATION_PHONE,
+  VALIDATION_USERNAME,
+  VALIDATION_LOGIN,
+  VALIDATION_PASSWORD,
+  VALIDATION_EMAIL,
+  VALIDATION_PHONE,
   REGISTRATION_MESSAGES,
   HTTP_STATUS_CODES,
 } from '../../constans';
@@ -65,59 +65,59 @@ export default function RegisterPage() {
   };
 
   const usernameValidationRules: Rule[] = [
-    { required: true, message: AUTH_VALIDATION_USERNAME.REQUIRED_MESSAGE },
+    { required: true, message: VALIDATION_USERNAME.REQUIRED_MESSAGE },
     {
-      pattern: AUTH_VALIDATION_USERNAME.PATTERN,
-      message: AUTH_VALIDATION_USERNAME.CORRECT_USERNAME_MESSAGE,
+      pattern: VALIDATION_USERNAME.PATTERN,
+      message: VALIDATION_USERNAME.CORRECT_USERNAME_MESSAGE,
     },
   ];
 
   const loginValidationRules: Rule[] = [
-    { required: true, message: AUTH_VALIDATION_LOGIN.REQUIRED_MESSAGE },
+    { required: true, message: VALIDATION_LOGIN.REQUIRED_MESSAGE },
     {
-      pattern: AUTH_VALIDATION_LOGIN.PATTERN,
-      message: AUTH_VALIDATION_LOGIN.CORRECT_LOGIN_MESSAGE,
+      pattern: VALIDATION_LOGIN.PATTERN,
+      message: VALIDATION_LOGIN.CORRECT_LOGIN_MESSAGE,
     },
   ];
 
   const passwordValidationRules: Rule[] = [
-    { required: true, message: AUTH_VALIDATION_PASSWORD.REQUIRED_MESSAGE },
+    { required: true, message: VALIDATION_PASSWORD.REQUIRED_MESSAGE },
     {
-      min: AUTH_VALIDATION_PASSWORD.MIN_LENGTH,
-      message: AUTH_VALIDATION_PASSWORD.MIN_LENGTH_MESSAGE,
+      min: VALIDATION_PASSWORD.MIN_LENGTH,
+      message: VALIDATION_PASSWORD.MIN_LENGTH_MESSAGE,
     },
     {
-      max: AUTH_VALIDATION_PASSWORD.MAX_LENGTH,
-      message: AUTH_VALIDATION_PASSWORD.MAX_LENGTH_MESSAGE,
+      max: VALIDATION_PASSWORD.MAX_LENGTH,
+      message: VALIDATION_PASSWORD.MAX_LENGTH_MESSAGE,
     },
     {
       whitespace: true,
-      message: AUTH_VALIDATION_PASSWORD.ONLY_SPACES_MESSAGE,
+      message: VALIDATION_PASSWORD.ONLY_SPACES_MESSAGE,
     },
   ];
 
   const confirmPasswordValidationRules: Rule[] = [
-    { required: true, message: AUTH_VALIDATION_PASSWORD.CONFIRM_PASSWORD_REQUIRED_MESSAGE },
+    { required: true, message: VALIDATION_PASSWORD.CONFIRM_PASSWORD_REQUIRED_MESSAGE },
     ({ getFieldValue }) => ({
       validator(_, value) {
         if (!value || getFieldValue('password') === value) {
           return Promise.resolve();
         }
-        return Promise.reject(new Error(AUTH_VALIDATION_PASSWORD.CONFIRM_PASSWORD_MESSAGE));
+        return Promise.reject(new Error(VALIDATION_PASSWORD.CONFIRM_PASSWORD_MESSAGE));
       },
     }),
   ];
 
   const emailValidationRules: Rule[] = [
-    { required: true, message: AUTH_VALIDATION_EMAIL.REQUIRED_MESSAGE },
-    { type: 'email', message: AUTH_VALIDATION_EMAIL.CORRECT_EMAIL_MESSAGE },
+    { required: true, message: VALIDATION_EMAIL.REQUIRED_MESSAGE },
+    { type: 'email', message: VALIDATION_EMAIL.CORRECT_EMAIL_MESSAGE },
   ];
 
   const phoneValidationRules: Rule[] = [
-    { required: false, message: AUTH_VALIDATION_PHONE.REQUIRED_MESSAGE },
+    { required: false, message: VALIDATION_PHONE.REQUIRED_MESSAGE },
     {
-      pattern: AUTH_VALIDATION_PHONE.PATTERN,
-      message: AUTH_VALIDATION_PHONE.CORRECT_PHONE_MESSAGE,
+      pattern: VALIDATION_PHONE.PATTERN,
+      message: VALIDATION_PHONE.CORRECT_PHONE_MESSAGE,
     },
   ];
 

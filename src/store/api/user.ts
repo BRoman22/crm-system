@@ -7,6 +7,7 @@ import { logout, setCredentials, setUser } from '../slices/user';
 export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: baseQueryWithReauth,
+  tagTypes: ['user'],
   endpoints: (build) => ({
     signUp: build.mutation<Profile, UserRegistration>({
       query: (body) => ({
@@ -57,6 +58,7 @@ export const userApi = createApi({
     }),
     getProfile: build.query<Profile, void>({
       query: () => ENDPOINTS.PROFILE,
+      providesTags: ['user'],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
@@ -72,6 +74,7 @@ export const userApi = createApi({
         method: 'PUT',
         body,
       }),
+      invalidatesTags: ['user'],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
