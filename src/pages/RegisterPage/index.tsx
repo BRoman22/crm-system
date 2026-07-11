@@ -1,6 +1,5 @@
-import { Form, Input, Button, Typography, message, Space } from 'antd';
+import { Form, Input, Button, Typography, message, Space, notification } from 'antd';
 import type { FormProps } from 'antd';
-import { useNavigate } from 'react-router-dom';
 import type { UserRegistration } from '../../types';
 import type { Rule } from 'antd/es/form';
 import { useSignUpMutation } from '../../store/api/user';
@@ -30,7 +29,6 @@ interface UserRegistrationWithConfirm extends UserRegistration {
 }
 
 export default function RegisterPage() {
-  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [signUp] = useSignUpMutation();
 
@@ -39,9 +37,17 @@ export default function RegisterPage() {
 
     try {
       await signUp(data).unwrap();
-
-      message.success(REGISTRATION_MESSAGES[HTTP_STATUS_CODES.CREATED]);
-      navigate(ROUTES.LOGIN);
+      notification.success({
+        title: `${REGISTRATION_MESSAGES[HTTP_STATUS_CODES.CREATED]}`,
+        description: 'Чтобы перейти на страницу входа нажмите на ссылку',
+        actions: [
+          <Link key={'login'} href={ROUTES.LOGIN}>
+            Вход
+          </Link>,
+        ],
+        duration: false,
+        placement: 'top',
+      });
     } catch (err) {
       const error = err as FetchBaseQueryError;
 

@@ -1,21 +1,21 @@
 import { Form, Input, Button, Typography, message, Space, Spin, Result } from 'antd';
 import type { FormProps } from 'antd';
 import type { Rule } from 'antd/es/form';
-import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+// import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { UserOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import type { Profile } from '../../types';
 import { useEffect } from 'react';
 import {
   useGetProfileQuery,
-  useUpdateProfileMutation,
+  // useUpdateProfileMutation,
   useLogoutMutation,
 } from '../../store/api/user';
 import {
   VALIDATION_USERNAME,
   VALIDATION_EMAIL,
   VALIDATION_PHONE,
-  PROFILE_MESSAGES,
-  HTTP_STATUS_CODES,
+  // PROFILE_MESSAGES,
+  // HTTP_STATUS_CODES,
 } from '../../constans';
 
 const { Text, Title } = Typography;
@@ -30,7 +30,7 @@ export default function ProfilePage() {
     isLoading: isProfileLoading,
     refetch: refetchProfile,
   } = useGetProfileQuery();
-  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+  // const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
   useEffect(() => {
@@ -44,25 +44,27 @@ export default function ProfilePage() {
   }, [profile, form]);
 
   const onFinish = async (values: ProfileFormValues) => {
-    try {
-      await updateProfile(values).unwrap();
-      message.success(PROFILE_MESSAGES[HTTP_STATUS_CODES.OK]);
-    } catch (err) {
-      const error = err as FetchBaseQueryError;
+    console.log('values', values);
+    message.error('Редактирование профиля временно недоступно');
+    // try {
+    //   await updateProfile(values).unwrap();
+    //   message.success(PROFILE_MESSAGES[HTTP_STATUS_CODES.OK]);
+    // } catch (err) {
+    //   const error = err as FetchBaseQueryError;
 
-      if (
-        error.status === 'PARSING_ERROR' &&
-        [
-          HTTP_STATUS_CODES.BAD_REQUEST,
-          HTTP_STATUS_CODES.NOT_FOUND,
-          HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
-        ].includes(error.originalStatus)
-      ) {
-        message.error(PROFILE_MESSAGES[error.originalStatus]);
-      } else {
-        message.error('Что-то пошло не так');
-      }
-    }
+    //   if (
+    //     error.status === 'PARSING_ERROR' &&
+    //     [
+    //       HTTP_STATUS_CODES.BAD_REQUEST,
+    //       HTTP_STATUS_CODES.NOT_FOUND,
+    //       HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+    //     ].includes(error.originalStatus)
+    //   ) {
+    //     message.error(PROFILE_MESSAGES[error.originalStatus]);
+    //   } else {
+    //     message.error('Что-то пошло не так');
+    //   }
+    // }
   };
 
   const onFinishFailed: FormProps['onFinishFailed'] = (error) => {
@@ -171,7 +173,13 @@ export default function ProfilePage() {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block size="large" loading={isUpdating}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            size="large"
+            // loading={isUpdating}
+          >
             Сохранить изменения
           </Button>
         </Form.Item>

@@ -130,7 +130,7 @@ export const HTTP_STATUS_CODES: { [key: string]: number } = {
 };
 
 export const REGISTRATION_MESSAGES: { [key: string]: string } = {
-  [HTTP_STATUS_CODES.OK]: 'Вы успешно зарегистрированы',
+  [HTTP_STATUS_CODES.CREATED]: 'Вы успешно зарегистрированы',
   [HTTP_STATUS_CODES.CONFLICT]: 'Пользователь с таким логином уже существует',
   [HTTP_STATUS_CODES.BAD_REQUEST]: 'Ошибка при регистрации. Пожалуйста, попробуйте еще раз.',
   [HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR]: 'Ошибка сервера. Пожалуйста, попробуйте позже.',
