@@ -1,14 +1,9 @@
-import { Button, Form, Input } from 'antd';
-import { VALIDATION_TITLE } from '../../constans';
-import { createTodo } from '../../api/endpoints/todos';
-import { notification } from 'antd';
-import { ERROR_MESSAGES } from '../../constans';
+import { Button, Form, Input, notification } from 'antd';
+import { TODOS_VALIDATION_TITLE, TODOS_MESSAGES } from '../../constans';
+import { useCreateTodoMutation } from '../../store/api/todos';
 
-interface Props {
-  fetchTodos: () => void;
-}
-
-export default function AddTodo({ fetchTodos }: Props) {
+export default function AddTodo() {
+  const [createTodo] = useCreateTodoMutation();
   const [form] = Form.useForm();
   const onFinish = async (values: { title: string }) => {
     try {
@@ -17,11 +12,9 @@ export default function AddTodo({ fetchTodos }: Props) {
     } catch (error) {
       console.error(error);
       notification.error({
-        title: ERROR_MESSAGES.TITLE,
-        description: ERROR_MESSAGES.CREATE_TODO,
+        title: TODOS_MESSAGES.TITLE,
+        description: TODOS_MESSAGES.CREATE_TODO,
       });
-    } finally {
-      fetchTodos();
     }
   };
 
@@ -38,19 +31,19 @@ export default function AddTodo({ fetchTodos }: Props) {
         rules={[
           {
             required: true,
-            message: VALIDATION_TITLE.REQUIRED_MESSAGE,
+            message: TODOS_VALIDATION_TITLE.REQUIRED_MESSAGE,
           },
           {
-            min: VALIDATION_TITLE.MIN_LENGTH,
-            message: VALIDATION_TITLE.MIN_LENGTH_MESSAGE,
+            min: TODOS_VALIDATION_TITLE.MIN_LENGTH,
+            message: TODOS_VALIDATION_TITLE.MIN_LENGTH_MESSAGE,
           },
           {
-            max: VALIDATION_TITLE.MAX_LENGTH,
-            message: VALIDATION_TITLE.MAX_LENGTH_MESSAGE,
+            max: TODOS_VALIDATION_TITLE.MAX_LENGTH,
+            message: TODOS_VALIDATION_TITLE.MAX_LENGTH_MESSAGE,
           },
           {
             whitespace: true,
-            message: VALIDATION_TITLE.ONLY_SPACES_MESSAGE,
+            message: TODOS_VALIDATION_TITLE.ONLY_SPACES_MESSAGE,
           },
         ]}
       >
