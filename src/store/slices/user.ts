@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Profile, Token } from '../../types';
+import { getRefreshToken, setRefreshToken, clearRefreshToken } from '../../services/tokenManager';
 
 interface AuthState {
   user: Profile | null;
@@ -20,43 +21,21 @@ const initialState: AuthState = {
     phoneNumber: '',
   },
   accessToken: null,
-  refreshToken: null,
+  refreshToken: getRefreshToken(),
   isAuthenticated: false,
   authStatus: 'idle',
 };
 
-const loadTokenFromStorage = (): Pick<AuthState, 'refreshToken'> => {
-  try {
-    const refreshToken = localStorage.getItem('refreshToken');
-    return {
-      refreshToken: refreshToken || null,
-    };
-  } catch {
-    return { refreshToken: null };
-  }
-};
-
-const saveTokenToStorage = (refreshToken: string) => {
-  localStorage.setItem('refreshToken', refreshToken);
-};
-
-const clearTokenFromStorage = () => {
-  localStorage.removeItem('refreshToken');
-};
-
 export const userSlice = createSlice({
   name: 'user',
-  initialState: {
-    ...initialState,
-    ...loadTokenFromStorage(),
-  },
+  initialState: initialState,
   reducers: {
     setCredentials: (state, action: PayloadAction<Token>) => {
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
       state.authStatus = 'succeeded';
-      saveTokenToStorage(action.payload.refreshToken);
+      setRefreshToken(action.payload.refreshToken);
     },
     logout: (state) => {
       state.user = null;
@@ -64,7 +43,7 @@ export const userSlice = createSlice({
       state.refreshToken = null;
       state.isAuthenticated = false;
       state.authStatus = 'failed';
-      clearTokenFromStorage();
+      clearRefreshToken();
     },
     setAuthChecking: (state) => {
       state.authStatus = 'loading';
