@@ -150,7 +150,7 @@ export default function ProfilePage() {
       >
         <Form.Item name="username" rules={usernameValidationRules}>
           <Input
-            prefix={<UserOutlined style={{ color: '#bfbfbf' }} />}
+            prefix={<UserOutlined style={{ color: 'var(--input-icon-color)' }} />}
             placeholder="Имя пользователя"
             size="large"
           />
@@ -158,7 +158,7 @@ export default function ProfilePage() {
 
         <Form.Item name="email" rules={emailValidationRules}>
           <Input
-            prefix={<MailOutlined style={{ color: '#bfbfbf' }} />}
+            prefix={<MailOutlined style={{ color: 'var(--input-icon-color)' }} />}
             placeholder="Почтовый адрес"
             size="large"
           />
@@ -166,7 +166,7 @@ export default function ProfilePage() {
 
         <Form.Item name="phoneNumber" rules={phoneValidationRules}>
           <Input
-            prefix={<PhoneOutlined style={{ color: '#bfbfbf' }} />}
+            prefix={<PhoneOutlined style={{ color: 'var(--input-icon-color)' }} />}
             placeholder="Телефон"
             size="large"
           />

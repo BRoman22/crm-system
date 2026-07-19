@@ -93,7 +93,7 @@ export default function LoginPage() {
       >
         <Form.Item name="login" rules={loginValidationRules}>
           <Input
-            prefix={<UserOutlined style={{ color: '#bfbfbf' }} />}
+            prefix={<UserOutlined style={{ color: 'var(--input-icon-color)' }} />}
             placeholder="Логин"
             size="large"
           />
@@ -101,7 +101,7 @@ export default function LoginPage() {
 
         <Form.Item name="password" rules={passwordValidationRules}>
           <Input.Password
-            prefix={<LockOutlined style={{ color: '#bfbfbf' }} />}
+            prefix={<LockOutlined style={{ color: 'var(--input-icon-color)' }} />}
             placeholder="Пароль"
             size="large"
           />
