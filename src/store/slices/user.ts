@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Profile, Token } from '../../types';
-import { getRefreshToken, setRefreshToken, clearRefreshToken } from '../../services/tokenManager';
+import { refreshTokenStorage } from '../../services/RefreshTokenStorage';
 
 interface AuthState {
   user: Profile | null;
@@ -21,7 +21,7 @@ const initialState: AuthState = {
     phoneNumber: '',
   },
   accessToken: null,
-  refreshToken: getRefreshToken(),
+  refreshToken: refreshTokenStorage.get(),
   isAuthenticated: false,
   authStatus: 'idle',
 };
@@ -35,7 +35,7 @@ export const userSlice = createSlice({
       state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
       state.authStatus = 'succeeded';
-      setRefreshToken(action.payload.refreshToken);
+      refreshTokenStorage.set(action.payload.refreshToken);
     },
     logout: (state) => {
       state.user = null;
@@ -43,7 +43,7 @@ export const userSlice = createSlice({
       state.refreshToken = null;
       state.isAuthenticated = false;
       state.authStatus = 'failed';
-      clearRefreshToken();
+      refreshTokenStorage.clear();
     },
     setAuthChecking: (state) => {
       state.authStatus = 'loading';
