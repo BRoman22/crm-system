@@ -31,6 +31,14 @@ export const userApi = createApi({
               refreshToken: data.refreshToken,
             })
           );
+
+          const { data: profile } = await dispatch(
+            userApi.endpoints.getProfile.initiate(undefined)
+          );
+
+          if (profile) {
+            dispatch(setUser(profile));
+          }
         } catch (error) {
           console.error('Login error:', error);
         }

@@ -20,6 +20,7 @@ export const ROUTES: { [key: string]: string } = {
   FORGOT_PASSWORD: '/forgot-password',
   TODO_LIST: '/',
   PROFILE: '/profile',
+  USERS: '/users',
   NOT_FOUND: '/*',
 };
 
@@ -33,6 +34,11 @@ export const NAVIGATION_MENU: { key: string; label: string; path: string }[] = [
     key: '2',
     label: 'Профиль',
     path: ROUTES.PROFILE,
+  },
+  {
+    key: '3',
+    label: 'Пользователи',
+    path: ROUTES.USERS,
   },
 ];
 

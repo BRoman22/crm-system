@@ -43,7 +43,7 @@ export interface UserRegistration {
   phoneNumber: string;
 }
 
-type Role = 'ADMIN' | 'USER' | 'MODERATOR';
+export type Role = 'ADMIN' | 'USER' | 'MODERATOR';
 export interface Profile {
   id: number;
   username: string;

@@ -8,6 +8,7 @@ import { Spin } from 'antd';
 import {
   TodoListPage,
   ProfilePage,
+  UsersPage,
   LoginPage,
   RegisterPage,
   MainLayout,
@@ -64,6 +65,7 @@ export default function App() {
       <Route element={<MainLayout redirectPath={ROUTES.LOGIN} />}>
         <Route path={ROUTES.TODO_LIST} element={<TodoListPage />} />
         <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
+        <Route path={ROUTES.USERS} element={<UsersPage redirectPath={ROUTES.TODO_LIST} />} />
       </Route>
 
       <Route path={ROUTES.NOT_FOUND} element={<Navigate to={ROUTES.TODO_LIST} replace />} />
