@@ -52,7 +52,7 @@ export default function MainLayout({ redirectPath }: Props) {
       <Sider width="20%" style={siderStyle}>
         <Menu
           mode="inline"
-          defaultSelectedKeys={[selectedKey]}
+          selectedKeys={[selectedKey]}
           items={menuItems}
           onClick={handleMenuClick}
         />

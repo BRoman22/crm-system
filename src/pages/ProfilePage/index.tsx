@@ -5,6 +5,7 @@ import type { Rule } from 'antd/es/form';
 import { UserOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import type { Profile } from '../../types';
 import { useEffect } from 'react';
+import { useAppSelector } from '../../store';
 import {
   useGetProfileQuery,
   // useUpdateProfileMutation,
@@ -25,12 +26,9 @@ type ProfileFormValues = Pick<Profile, 'username' | 'email' | 'phoneNumber'>;
 export default function ProfilePage() {
   const [form] = Form.useForm();
 
-  const {
-    data: profile,
-    isLoading: isProfileLoading,
-    refetch: refetchProfile,
-  } = useGetProfileQuery();
+  const { isLoading: isProfileLoading, refetch: refetchProfile } = useGetProfileQuery();
   // const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+  const profile = useAppSelector((state) => state.user.user);
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
   useEffect(() => {
@@ -114,7 +112,7 @@ export default function ProfilePage() {
     );
   }
 
-  if (!profile) {
+  if (profile?.id === 0 || !profile) {
     return (
       <Result
         status="error"

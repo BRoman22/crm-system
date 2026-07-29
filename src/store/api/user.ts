@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import baseQueryWithReauth from '../baseQueryWithReauth';
 import { ENDPOINTS } from '../../constans';
 import type { AuthData, Token, UserRegistration, Profile } from '../../types';
-import { logout, setCredentials, setUser } from '../slices/user';
+import { logout, setCredentials, setUser, setAuthChecking } from '../slices/user';
 
 export const userApi = createApi({
   reducerPath: 'userApi',
@@ -39,8 +39,8 @@ export const userApi = createApi({
           if (profile) {
             dispatch(setUser(profile));
           }
-        } catch (error) {
-          console.error('Login error:', error);
+        } catch {
+          dispatch(logout());
         }
       },
     }),
@@ -63,6 +63,23 @@ export const userApi = createApi({
         method: 'POST',
         body,
       }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        dispatch(setAuthChecking());
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setCredentials(data));
+
+          const { data: profile } = await dispatch(
+            userApi.endpoints.getProfile.initiate(undefined)
+          );
+
+          if (profile) {
+            dispatch(setUser(profile));
+          }
+        } catch {
+          dispatch(logout());
+        }
+      },
     }),
     getProfile: build.query<Profile, void>({
       query: () => ENDPOINTS.PROFILE,

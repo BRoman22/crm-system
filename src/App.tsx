@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { ROUTES } from './constans';
 import { useAppDispatch, useAppSelector } from './store';
 import { useEffect } from 'react';
-import { logout, setCredentials, setAuthChecking } from './store/slices/user';
+import { logout } from './store/slices/user';
 import { useRefreshMutation } from './store/api/user';
 import { Spin } from 'antd';
 import {
@@ -22,23 +22,12 @@ export default function App() {
   const [refresh] = useRefreshMutation();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      if (!refreshToken) {
-        dispatch(logout());
-        return;
-      }
-
-      dispatch(setAuthChecking());
-
-      try {
-        const result = await refresh({ refreshToken }).unwrap();
-        dispatch(setCredentials(result));
-      } catch {
-        dispatch(logout());
-      }
-    };
-
-    checkAuth();
+    if (!refreshToken) {
+      dispatch(logout());
+      return;
+    } else {
+      refresh({ refreshToken });
+    }
   }, []);
 
   if (authStatus === 'idle' || authStatus === 'loading') {
