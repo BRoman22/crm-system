@@ -55,11 +55,36 @@ export interface Profile {
 }
 
 export interface ProfileRequest {
-  username: string;
-  email: string;
-  phoneNumber: string;
+  username?: string;
+  email?: string;
+  phoneNumber?: string;
 }
 
 export interface PasswordRequest {
   password: string;
+}
+
+export interface AdminMetaResponse<T> {
+  data: T[];
+  meta: {
+    totalAmount: number;
+    sortBy: string;
+    sortOrder: 'asc' | 'desc';
+  };
+}
+
+export interface UserFilters {
+  search?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+  isBlocked?: boolean;
+  limit?: number; // сколько на странице
+  page?: number; // страницу
+}
+
+export interface UserRolesRequest {
+  roles: Role[];
+  // при вызове этой апи роли будут обновлены к тому массиву который будет передан
+  // например если у вас была roles: ['ADMIN'] а вы хотите добавить ['MODERATOR'] то нужно передавать
+  // старые + новые - roles: ['ADMIN', 'MODERATOR']
 }

@@ -12,6 +12,7 @@ export const ENDPOINTS: { [key: string]: string } = {
   LOGOUT: '/user/logout',
   PROFILE: '/user/profile',
   RESET_PASSWORD: '/user/profile/reset-password',
+  USERS: '/admin/users',
 };
 
 export const ROUTES: { [key: string]: string } = {
