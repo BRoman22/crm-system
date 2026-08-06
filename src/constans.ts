@@ -22,6 +22,7 @@ export const ROUTES: { [key: string]: string } = {
   TODO_LIST: '/',
   PROFILE: '/profile',
   USERS: '/users',
+  USER_DETAILS: '/users/:id',
   NOT_FOUND: '/*',
 };
 

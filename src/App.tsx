@@ -9,6 +9,7 @@ import {
   TodoListPage,
   ProfilePage,
   UsersPage,
+  UserDetailsPage,
   LoginPage,
   RegisterPage,
   MainLayout,
@@ -55,6 +56,10 @@ export default function App() {
         <Route path={ROUTES.TODO_LIST} element={<TodoListPage />} />
         <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
         <Route path={ROUTES.USERS} element={<UsersPage redirectPath={ROUTES.TODO_LIST} />} />
+        <Route
+          path={ROUTES.USER_DETAILS}
+          element={<UserDetailsPage redirectPath={ROUTES.TODO_LIST} />}
+        />
       </Route>
 
       <Route path={ROUTES.NOT_FOUND} element={<Navigate to={ROUTES.TODO_LIST} replace />} />
