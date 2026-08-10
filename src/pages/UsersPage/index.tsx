@@ -6,6 +6,7 @@ import type { UserFilters, Profile, Role } from '../../types';
 import { ROUTES } from '../../constans';
 import { Table, Input, Button, Tag, Space, Dropdown, Typography, Card, Flex } from 'antd';
 import type { MenuProps, TableProps } from 'antd';
+import useDebounce from '../../hooks/useDebounce';
 import {
   SearchOutlined,
   FilterOutlined,
@@ -29,14 +30,23 @@ interface Props {
 export default function UsersPage({ redirectPath }: Props) {
   const navigate = useNavigate();
   const hasAccess = useHasAccess(['ADMIN', 'MODERATOR']);
-  const [query, setQuery] = useState<UserFilters>({
-    search: '',
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 400);
+  const [filters, setFilters] = useState<Omit<UserFilters, 'search'>>({
     sortBy: '',
     sortOrder: 'asc',
     isBlocked: false,
     limit: 10,
     page: 1,
   });
+
+  const [prevDebouncedSearch, setPrevDebouncedSearch] = useState(debouncedSearch);
+  if (debouncedSearch !== prevDebouncedSearch) {
+    setPrevDebouncedSearch(debouncedSearch);
+    setFilters((prev) => ({ ...prev, page: 1 }));
+  }
+
+  const query: UserFilters = { ...filters, search: debouncedSearch };
   const { data: users, isLoading } = useGetUsersQuery(query);
 
   if (!hasAccess) {
@@ -49,10 +59,6 @@ export default function UsersPage({ redirectPath }: Props) {
     { key: 'delete', label: 'Удалить', danger: true },
   ];
 
-  const handleSearch = (value: string) => {
-    setQuery((prev) => ({ ...prev, search: value, page: 1 }));
-  };
-
   const handleToggleBlock = (user: Profile) => {
     // TODO: подключить апи блокировки/разблокировки
     console.log('toggle block for', user.id, !user.isBlocked);
@@ -62,7 +68,7 @@ export default function UsersPage({ redirectPath }: Props) {
     const singleSorter = Array.isArray(sorter) ? sorter[0] : sorter;
     const hasActiveSort = Boolean(singleSorter?.order);
 
-    setQuery((prev) => ({
+    setFilters((prev) => ({
       ...prev,
       page: pagination.current ?? prev.page,
       limit: pagination.pageSize ?? prev.limit,
@@ -166,7 +172,8 @@ export default function UsersPage({ redirectPath }: Props) {
               prefix={<SearchOutlined style={{ color: 'var(--input-icon-color)' }} />}
               style={{ width: 320 }}
               allowClear
-              onChange={(e) => handleSearch(e.target.value)}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
             <Button icon={<FilterOutlined />} onClick={() => console.log('filter')}>
               Filter
