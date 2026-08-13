@@ -1,12 +1,16 @@
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useHasAccess } from '../../hooks/useHasAccess';
 import { useState } from 'react';
-import { useGetUsersQuery } from '../../store/api/admin';
 import type { UserFilters, Profile, Role } from '../../types';
 import { ROUTES } from '../../constans';
-import { Table, Input, Button, Tag, Space, Dropdown, Typography, Card, Flex } from 'antd';
 import type { MenuProps, TableProps } from 'antd';
 import useDebounce from '../../hooks/useDebounce';
+import {
+  useGetUsersQuery,
+  useDeleteUserMutation,
+  useBlockUserMutation,
+  useUnblockUserMutation,
+} from '../../store/api/admin';
 import {
   SearchOutlined,
   FilterOutlined,
@@ -14,7 +18,21 @@ import {
   PhoneOutlined,
   ArrowRightOutlined,
   MoreOutlined,
+  ExclamationCircleFilled,
 } from '@ant-design/icons';
+import {
+  Table,
+  Input,
+  Button,
+  Tag,
+  Space,
+  Dropdown,
+  Typography,
+  Card,
+  Flex,
+  Modal,
+  message,
+} from 'antd';
 
 const { Title } = Typography;
 const roleColorMap: Record<Role, string> = {
@@ -32,10 +50,11 @@ export default function UsersPage({ redirectPath }: Props) {
   const hasAccess = useHasAccess(['ADMIN', 'MODERATOR']);
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 400);
-  const [filters, setFilters] = useState<Omit<UserFilters, 'search'>>({
+  const [filters, setFilters] = useState<UserFilters>({
+    search: '',
     sortBy: '',
     sortOrder: 'asc',
-    isBlocked: false,
+    isBlocked: undefined,
     limit: 10,
     page: 1,
   });
@@ -48,32 +67,93 @@ export default function UsersPage({ redirectPath }: Props) {
 
   const query: UserFilters = { ...filters, search: debouncedSearch };
   const { data: users, isLoading } = useGetUsersQuery(query);
+  const [deleteUser] = useDeleteUserMutation();
+  const [blockUser, { isLoading: isBlocking }] = useBlockUserMutation();
+  const [unblockUser, { isLoading: isUnblocking }] = useUnblockUserMutation();
+  const [togglingId, setTogglingId] = useState<number | null>(null);
 
   if (!hasAccess) {
     return <Navigate to={redirectPath} replace />;
   }
 
-  const getRowMenu = (): MenuProps['items'] => [
-    { key: 'view', label: 'Просмотреть профиль' },
-    { key: 'edit', label: 'Редактировать' },
-    { key: 'delete', label: 'Удалить', danger: true },
+  const getRowMenu = (user: Profile): MenuProps['items'] => [
+    { key: 'delete', label: 'Удалить', danger: true, onClick: () => handleDelete(user) },
   ];
 
   const handleToggleBlock = (user: Profile) => {
-    // TODO: подключить апи блокировки/разблокировки
-    console.log('toggle block for', user.id, !user.isBlocked);
+    const isCurrentlyBlocked = user.isBlocked;
+
+    Modal.confirm({
+      title: isCurrentlyBlocked
+        ? `Разблокировать пользователя ${user.username}?`
+        : `Заблокировать пользователя ${user.username}?`,
+      icon: <ExclamationCircleFilled />,
+      content: isCurrentlyBlocked
+        ? 'Пользователь снова получит доступ к системе.'
+        : 'Пользователь потеряет доступ к системе.',
+      okText: isCurrentlyBlocked ? 'Разблокировать' : 'Заблокировать',
+      okType: isCurrentlyBlocked ? 'primary' : 'danger',
+      cancelText: 'Отмена',
+      onOk: async () => {
+        setTogglingId(user.id);
+        try {
+          if (isCurrentlyBlocked) {
+            await unblockUser({ id: user.id }).unwrap();
+            message.success(`Пользователь ${user.username} разблокирован`);
+          } else {
+            await blockUser({ id: user.id }).unwrap();
+            message.success(`Пользователь ${user.username} заблокирован`);
+          }
+        } catch {
+          message.error('Не удалось изменить статус блокировки');
+        } finally {
+          setTogglingId(null);
+        }
+      },
+    });
   };
 
-  const handleTableChange: TableProps<Profile>['onChange'] = (pagination, _, sorter) => {
+  const handleDelete = (user: Profile) => {
+    Modal.confirm({
+      title: `Удалить пользователя ${user.username}?`,
+      icon: <ExclamationCircleFilled />,
+      content: 'Это действие нельзя отменить.',
+      okText: 'Удалить',
+      okType: 'danger',
+      cancelText: 'Отмена',
+      onOk: async () => {
+        try {
+          await deleteUser(user.id).unwrap();
+          message.success('Пользователь удалён');
+        } catch {
+          message.error('Не удалось удалить пользователя');
+        }
+      },
+    });
+  };
+
+  const handleTableChange: TableProps<Profile>['onChange'] = (
+    pagination,
+    _tableFilters,
+    sorter
+  ) => {
     const singleSorter = Array.isArray(sorter) ? sorter[0] : sorter;
     const hasActiveSort = Boolean(singleSorter?.order);
+    const isBlockedField = singleSorter?.field === 'isBlocked';
+
+    const sortOrder: UserFilters['sortOrder'] = hasActiveSort
+      ? singleSorter.order === 'descend'
+        ? 'desc'
+        : 'asc'
+      : 'asc';
 
     setFilters((prev) => ({
       ...prev,
       page: pagination.current ?? prev.page,
       limit: pagination.pageSize ?? prev.limit,
-      sortBy: hasActiveSort ? (singleSorter.field as string) : '',
-      sortOrder: singleSorter?.order === 'descend' ? 'desc' : 'asc',
+      sortBy: hasActiveSort ? (singleSorter.field as string) : undefined,
+      sortOrder,
+      isBlocked: isBlockedField ? singleSorter.order !== 'descend' : undefined,
     }));
   };
 
@@ -126,7 +206,8 @@ export default function UsersPage({ redirectPath }: Props) {
       title: 'Блокировка',
       dataIndex: 'isBlocked',
       key: 'isBlocked',
-      render: (isBlocked: boolean) => (isBlocked ? '+' : '-'),
+      sorter: true,
+      render: (isBlocked: Profile['isBlocked']) => (isBlocked ? '+' : '-'),
     },
     {
       title: 'Дата регистрации',
@@ -140,14 +221,18 @@ export default function UsersPage({ redirectPath }: Props) {
       width: 160,
       render: (_, user) => (
         <Space>
-          <Button onClick={() => handleToggleBlock(user)} style={{ minWidth: 84 }}>
+          <Button
+            onClick={() => handleToggleBlock(user)}
+            loading={togglingId === user.id && (isBlocking || isUnblocking)}
+            style={{ minWidth: 84 }}
+          >
             {user.isBlocked ? 'разблок' : 'блок'}
           </Button>
           <Button
             icon={<ArrowRightOutlined />}
             onClick={() => navigate(`/${ROUTES.USERS}/${user.id}`)}
           />
-          <Dropdown menu={{ items: getRowMenu() }} trigger={['click']}>
+          <Dropdown menu={{ items: getRowMenu(user) }} trigger={['click']}>
             <Button icon={<MoreOutlined />} />
           </Dropdown>
         </Space>
@@ -186,7 +271,6 @@ export default function UsersPage({ redirectPath }: Props) {
           columns={columns}
           dataSource={users?.data}
           loading={isLoading}
-          // rowSelection={{}}
           onChange={handleTableChange}
           pagination={{
             current: query.page,
