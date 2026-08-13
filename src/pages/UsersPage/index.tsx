@@ -10,6 +10,7 @@ import {
   useDeleteUserMutation,
   useBlockUserMutation,
   useUnblockUserMutation,
+  useChangeRoleMutation,
 } from '../../store/api/admin';
 import {
   SearchOutlined,
@@ -51,6 +52,8 @@ interface Props {
 }
 
 export default function UsersPage({ redirectPath }: Props) {
+  const [changeRole, { isLoading: isChangingRole }] = useChangeRoleMutation();
+  const [changingRoleId, setChangingRoleId] = useState<number | null>(null);
   const navigate = useNavigate();
   const hasAccess = useHasAccess(['ADMIN', 'MODERATOR']);
   const [search, setSearch] = useState('');
@@ -106,6 +109,11 @@ export default function UsersPage({ redirectPath }: Props) {
   };
 
   const getRowMenu = (user: Profile): MenuProps['items'] => [
+    {
+      key: 'addRole',
+      label: user.roles.includes('ADMIN') ? 'Забрать роль админа' : 'Сделать админом',
+      onClick: () => handleAddRole(user),
+    },
     { key: 'delete', label: 'Удалить', danger: true, onClick: () => handleDelete(user) },
   ];
 
@@ -137,6 +145,42 @@ export default function UsersPage({ redirectPath }: Props) {
           message.error('Не удалось изменить статус блокировки');
         } finally {
           setTogglingId(null);
+        }
+      },
+    });
+  };
+
+  const handleAddRole = (user: Profile) => {
+    const isAdmin = user.roles.includes('ADMIN');
+
+    Modal.confirm({
+      title: isAdmin
+        ? `Забрать роль администратора у ${user.username}?`
+        : `Выдать роль администратора ${user.username}?`,
+      icon: <ExclamationCircleFilled />,
+      content: isAdmin
+        ? 'Пользователь потеряет права администратора.'
+        : 'Пользователь получит права администратора.',
+      okText: isAdmin ? 'Забрать роль' : 'Выдать роль',
+      okType: isAdmin ? 'danger' : 'primary',
+      cancelText: 'Отмена',
+      onOk: async () => {
+        const nextRoles: Role[] = isAdmin
+          ? user.roles.filter((role) => role !== 'ADMIN')
+          : [...user.roles, 'ADMIN'];
+
+        setChangingRoleId(user.id);
+        try {
+          await changeRole({ id: user.id, roles: nextRoles }).unwrap();
+          message.success(
+            isAdmin
+              ? `Роль администратора отозвана у ${user.username}`
+              : `${user.username} назначен администратором`
+          );
+        } catch {
+          message.error('Не удалось изменить роль пользователя');
+        } finally {
+          setChangingRoleId(null);
         }
       },
     });
@@ -317,7 +361,11 @@ export default function UsersPage({ redirectPath }: Props) {
             icon={<ArrowRightOutlined />}
             onClick={() => navigate(`/${ROUTES.USERS}/${user.id}`)}
           />
-          <Dropdown menu={{ items: getRowMenu(user) }} trigger={['click']}>
+          <Dropdown
+            menu={{ items: getRowMenu(user) }}
+            trigger={['click']}
+            disabled={changingRoleId === user.id && isChangingRole}
+          >
             <Button icon={<MoreOutlined />} />
           </Dropdown>
         </Space>
