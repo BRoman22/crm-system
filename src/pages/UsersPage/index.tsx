@@ -64,7 +64,7 @@ export default function UsersPage({ redirectPath }: Props) {
     sortBy: '',
     sortOrder: 'asc',
     isBlocked: undefined,
-    limit: 10,
+    limit: 20,
     page: 1,
   });
 
