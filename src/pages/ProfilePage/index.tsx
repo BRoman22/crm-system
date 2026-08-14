@@ -1,22 +1,22 @@
+import { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, message, Space, Spin, Result } from 'antd';
 import type { FormProps } from 'antd';
 import type { Rule } from 'antd/es/form';
-// import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { UserOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import type { Profile } from '../../types';
-import { useEffect } from 'react';
 import { useAppSelector } from '../../store';
 import {
   useGetProfileQuery,
-  // useUpdateProfileMutation,
+  useUpdateProfileMutation,
   useLogoutMutation,
 } from '../../store/api/user';
 import {
   VALIDATION_USERNAME,
   VALIDATION_EMAIL,
   VALIDATION_PHONE,
-  // PROFILE_MESSAGES,
-  // HTTP_STATUS_CODES,
+  PROFILE_MESSAGES,
+  HTTP_STATUS_CODES,
 } from '../../constans';
 
 const { Text, Title } = Typography;
@@ -25,9 +25,10 @@ type ProfileFormValues = Pick<Profile, 'username' | 'email' | 'phoneNumber'>;
 
 export default function ProfilePage() {
   const [form] = Form.useForm();
+  const [isEditing, setIsEditing] = useState(false);
 
   const { isLoading: isProfileLoading, refetch: refetchProfile } = useGetProfileQuery();
-  // const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
   const profile = useAppSelector((state) => state.user.user);
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
@@ -42,27 +43,26 @@ export default function ProfilePage() {
   }, [profile, form]);
 
   const onFinish = async (values: ProfileFormValues) => {
-    console.log('values', values);
-    message.error('Редактирование профиля временно недоступно');
-    // try {
-    //   await updateProfile(values).unwrap();
-    //   message.success(PROFILE_MESSAGES[HTTP_STATUS_CODES.OK]);
-    // } catch (err) {
-    //   const error = err as FetchBaseQueryError;
+    try {
+      await updateProfile(values).unwrap();
+      message.success(PROFILE_MESSAGES[HTTP_STATUS_CODES.OK]);
+      setIsEditing(false);
+    } catch (err) {
+      const error = err as FetchBaseQueryError;
 
-    //   if (
-    //     error.status === 'PARSING_ERROR' &&
-    //     [
-    //       HTTP_STATUS_CODES.BAD_REQUEST,
-    //       HTTP_STATUS_CODES.NOT_FOUND,
-    //       HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
-    //     ].includes(error.originalStatus)
-    //   ) {
-    //     message.error(PROFILE_MESSAGES[error.originalStatus]);
-    //   } else {
-    //     message.error('Что-то пошло не так');
-    //   }
-    // }
+      if (
+        error.status === 'PARSING_ERROR' &&
+        [
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          HTTP_STATUS_CODES.NOT_FOUND,
+          HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+        ].includes(error.originalStatus)
+      ) {
+        message.error(PROFILE_MESSAGES[error.originalStatus]);
+      } else {
+        message.error('Что-то пошло не так');
+      }
+    }
   };
 
   const onFinishFailed: FormProps['onFinishFailed'] = (error) => {
@@ -75,6 +75,21 @@ export default function ProfilePage() {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleStartEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    if (profile) {
+      form.setFieldsValue({
+        username: profile.username,
+        email: profile.email,
+        phoneNumber: profile.phoneNumber,
+      });
+    }
+    setIsEditing(false);
   };
 
   const usernameValidationRules: Rule[] = [
@@ -112,7 +127,7 @@ export default function ProfilePage() {
     );
   }
 
-  if (profile?.id === 0 || !profile) {
+  if (!profile) {
     return (
       <Result
         status="error"
@@ -151,6 +166,7 @@ export default function ProfilePage() {
             prefix={<UserOutlined style={{ color: 'var(--input-icon-color)' }} />}
             placeholder="Имя пользователя"
             size="large"
+            disabled={!isEditing}
           />
         </Form.Item>
 
@@ -159,6 +175,7 @@ export default function ProfilePage() {
             prefix={<MailOutlined style={{ color: 'var(--input-icon-color)' }} />}
             placeholder="Почтовый адрес"
             size="large"
+            disabled={!isEditing}
           />
         </Form.Item>
 
@@ -167,20 +184,34 @@ export default function ProfilePage() {
             prefix={<PhoneOutlined style={{ color: 'var(--input-icon-color)' }} />}
             placeholder="Телефон"
             size="large"
+            disabled={!isEditing}
           />
         </Form.Item>
 
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            size="large"
-            // loading={isUpdating}
-          >
-            Сохранить изменения
-          </Button>
-        </Form.Item>
+        {isEditing ? (
+          <Form.Item>
+            <Space.Compact block>
+              <Button size="large" onClick={handleCancelEdit} style={{ flex: 1 }}>
+                Отмена
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                size="large"
+                loading={isUpdating}
+                style={{ flex: 1 }}
+              >
+                Сохранить
+              </Button>
+            </Space.Compact>
+          </Form.Item>
+        ) : (
+          <Form.Item>
+            <Button type="primary" block size="large" onClick={handleStartEdit}>
+              Редактировать
+            </Button>
+          </Form.Item>
+        )}
       </Form>
 
       <Button danger block size="large" loading={isLoggingOut} onClick={handleLogout}>

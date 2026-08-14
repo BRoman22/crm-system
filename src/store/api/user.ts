@@ -54,6 +54,7 @@ export const userApi = createApi({
           await queryFulfilled;
         } finally {
           dispatch(logout());
+          dispatch(userApi.util.resetApiState());
         }
       },
     }),
