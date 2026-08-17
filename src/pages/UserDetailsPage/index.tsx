@@ -5,7 +5,7 @@ import type { FormProps } from 'antd';
 import type { Rule } from 'antd/es/form';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { UserOutlined, MailOutlined, PhoneOutlined, ArrowLeftOutlined } from '@ant-design/icons';
-import type { Profile } from '../../types';
+import type { ProfileRequest } from '../../types';
 import { useHasAccess } from '../../hooks/useHasAccess';
 import { useGetUserByIdQuery, useUpdateUserMutation } from '../../store/api/admin';
 import {
@@ -21,8 +21,6 @@ const { Title } = Typography;
 interface Props {
   redirectPath: string;
 }
-
-type ProfileFormValues = Pick<Profile, 'username' | 'email' | 'phoneNumber'>;
 
 export default function UserDetailsPage({ redirectPath }: Props) {
   const { id } = useParams<{ id: string }>();
@@ -53,9 +51,23 @@ export default function UserDetailsPage({ redirectPath }: Props) {
     return <Navigate to={redirectPath} replace />;
   }
 
-  const onFinish = async (values: ProfileFormValues) => {
+  const onFinish = async (values: ProfileRequest) => {
+    if (!user) return;
+
+    const changedValues = (Object.keys(values) as (keyof ProfileRequest)[]).reduce((acc, key) => {
+      if (values[key] !== user[key]) {
+        acc[key] = values[key];
+      }
+      return acc;
+    }, {} as ProfileRequest);
+
+    if (Object.keys(changedValues).length === 0) {
+      setIsEditing(false);
+      return;
+    }
+
     try {
-      await updateUser({ id: numericId, body: values }).unwrap();
+      await updateUser({ id: numericId, body: changedValues as ProfileRequest }).unwrap();
       message.success(PROFILE_MESSAGES[HTTP_STATUS_CODES.OK]);
       setIsEditing(false);
     } catch (err) {
