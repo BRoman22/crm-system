@@ -45,7 +45,7 @@ export default function MainLayout({ redirectPath }: Props) {
   const selectedKey =
     NAVIGATION_MENU.find((item) => item.path === location.pathname)?.key ?? NAVIGATION_MENU[0].key;
 
-  const menuItems = NAVIGATION_MENU.filter((item) => hasAccess || item.label !== 'Пользователи');
+  const menuItems = NAVIGATION_MENU.filter((item) => hasAccess || item.key !== '3');
 
   return (
     <Layout style={layoutStyle}>
