@@ -8,6 +8,7 @@ import { UserOutlined, MailOutlined, PhoneOutlined, ArrowLeftOutlined } from '@a
 import type { ProfileRequest } from '../../types';
 import { useHasAccess } from '../../hooks/useHasAccess';
 import { useGetUserByIdQuery, useUpdateUserMutation } from '../../store/api/admin';
+import getDirtyValues from '../../services/getDirtyValues';
 import {
   VALIDATION_USERNAME,
   VALIDATION_EMAIL,
@@ -54,20 +55,15 @@ export default function UserDetailsPage({ redirectPath }: Props) {
   const onFinish = async (values: ProfileRequest) => {
     if (!user) return;
 
-    const changedValues = (Object.keys(values) as (keyof ProfileRequest)[]).reduce((acc, key) => {
-      if (values[key] !== user[key]) {
-        acc[key] = values[key];
-      }
-      return acc;
-    }, {} as ProfileRequest);
+    const dirtyValues = getDirtyValues(values, user);
 
-    if (Object.keys(changedValues).length === 0) {
+    if (Object.keys(dirtyValues).length === 0) {
       setIsEditing(false);
       return;
     }
 
     try {
-      await updateUser({ id: numericId, body: changedValues as ProfileRequest }).unwrap();
+      await updateUser({ id: numericId, body: dirtyValues }).unwrap();
       message.success(PROFILE_MESSAGES[HTTP_STATUS_CODES.OK]);
       setIsEditing(false);
     } catch (err) {
