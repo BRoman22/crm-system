@@ -55,9 +55,9 @@ export default function UserDetailsPage({ redirectPath }: Props) {
   const onFinish = async (values: ProfileRequest) => {
     if (!user) return;
 
-    const dirtyValues = getDirtyValues(values, user);
+    const { dirtyValues, dirtyCount } = getDirtyValues(values, user);
 
-    if (Object.keys(dirtyValues).length === 0) {
+    if (dirtyCount === 0) {
       setIsEditing(false);
       return;
     }
