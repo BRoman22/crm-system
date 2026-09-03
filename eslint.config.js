@@ -36,6 +36,13 @@ export default defineConfig([
           printWidth: 100,
         },
       ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
     },
   },
   // Отключаем все правила ESLint, которые конфликтуют с Prettier (ВАЖНО: должно быть последним)

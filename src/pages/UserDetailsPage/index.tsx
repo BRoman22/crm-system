@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, message, Space, Spin, Result } from 'antd';
+import { useParams, Navigate, useNavigate } from 'react-router-dom';
+import { Form, Input, Button, Typography, message, Space, Spin, Result, Flex } from 'antd';
 import type { FormProps } from 'antd';
 import type { Rule } from 'antd/es/form';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import { UserOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
-import type { Profile } from '../../types';
-import { useAppSelector } from '../../store';
-import {
-  useGetProfileQuery,
-  useUpdateProfileMutation,
-  useLogoutMutation,
-} from '../../store/api/user';
+import { UserOutlined, MailOutlined, PhoneOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import type { ProfileRequest } from '../../types';
+import { useHasAccess } from '../../hooks/useHasAccess';
+import { useGetUserByIdQuery, useUpdateUserMutation } from '../../store/api/admin';
+import getDirtyValues from '../../services/getDirtyValues';
 import {
   VALIDATION_USERNAME,
   VALIDATION_EMAIL,
@@ -19,32 +17,53 @@ import {
   HTTP_STATUS_CODES,
 } from '../../constans';
 
-const { Text, Title } = Typography;
+const { Title } = Typography;
 
-type ProfileFormValues = Pick<Profile, 'username' | 'email' | 'phoneNumber'>;
+interface Props {
+  redirectPath: string;
+}
 
-export default function ProfilePage() {
+export default function UserDetailsPage({ redirectPath }: Props) {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const hasAccess = useHasAccess(['ADMIN', 'MODERATOR']);
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
 
-  const { isLoading: isProfileLoading, refetch: refetchProfile } = useGetProfileQuery();
-  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
-  const profile = useAppSelector((state) => state.user.user);
-  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
+  const numericId = Number(id);
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    refetch: refetchUser,
+  } = useGetUserByIdQuery(numericId, { skip: !id });
+  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
   useEffect(() => {
-    if (profile) {
+    if (user) {
       form.setFieldsValue({
-        username: profile.username,
-        email: profile.email,
-        phoneNumber: profile.phoneNumber,
+        username: user.username,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
       });
     }
-  }, [profile, form]);
+  }, [user, form]);
 
-  const onFinish = async (values: ProfileFormValues) => {
+  if (!hasAccess || !id) {
+    return <Navigate to={redirectPath} replace />;
+  }
+
+  const onFinish = async (values: ProfileRequest) => {
+    if (!user) return;
+
+    const { dirtyValues, dirtyCount } = getDirtyValues(values, user);
+
+    if (dirtyCount === 0) {
+      setIsEditing(false);
+      return;
+    }
+
     try {
-      await updateProfile(values).unwrap();
+      await updateUser({ id: numericId, body: dirtyValues }).unwrap();
       message.success(PROFILE_MESSAGES[HTTP_STATUS_CODES.OK]);
       setIsEditing(false);
     } catch (err) {
@@ -69,24 +88,16 @@ export default function ProfilePage() {
     message.error(error.message);
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout().unwrap();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleStartEdit = () => {
     setIsEditing(true);
   };
 
   const handleCancelEdit = () => {
-    if (profile) {
+    if (user) {
       form.setFieldsValue({
-        username: profile.username,
-        email: profile.email,
-        phoneNumber: profile.phoneNumber,
+        username: user.username,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
       });
     }
     setIsEditing(false);
@@ -113,7 +124,13 @@ export default function ProfilePage() {
     },
   ];
 
-  if (isProfileLoading) {
+  const backButton = (
+    <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>
+      Назад
+    </Button>
+  );
+
+  if (isUserLoading) {
     return (
       <Spin
         size="large"
@@ -127,39 +144,40 @@ export default function ProfilePage() {
     );
   }
 
-  if (!profile) {
+  if (!user) {
     return (
-      <Result
-        status="error"
-        title="Не удалось загрузить профиль"
-        subTitle="Проверьте соединение с интернетом и попробуйте снова"
-        extra={[
-          <Button type="primary" onClick={() => refetchProfile()}>
-            Повторить попытку
-          </Button>,
-          <Button key="logout" danger loading={isLoggingOut} onClick={handleLogout}>
-            Выйти
-          </Button>,
-        ]}
-      />
+      <Flex vertical gap={24} style={{ padding: 24 }}>
+        {backButton}
+        <Result
+          status="error"
+          title="Не удалось загрузить пользователя"
+          subTitle="Проверьте соединение с интернетом и попробуйте снова"
+          extra={
+            <Button type="primary" onClick={() => refetchUser()}>
+              Повторить попытку
+            </Button>
+          }
+        />
+      </Flex>
     );
   }
 
   return (
-    <>
-      <Space style={{ display: 'flex', textAlign: 'center', flexDirection: 'column' }}>
-        <Title level={2}>{'Мой профиль'}</Title>
-        <Text type="secondary">{'Здесь вы можете изменить свои данные'}</Text>
-      </Space>
+    <Flex vertical gap={24} style={{ padding: 24, maxWidth: 480, margin: '0 auto' }}>
+      <Flex align="center" gap={12}>
+        {backButton}
+        <Title level={3} style={{ margin: 0 }}>
+          Профиль пользователя
+        </Title>
+      </Flex>
 
       <Form
         form={form}
-        name="profile"
+        name="userDetails"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         layout="vertical"
         size="large"
-        style={{ marginTop: 24 }}
       >
         <Form.Item name="username" rules={usernameValidationRules}>
           <Input
@@ -213,10 +231,6 @@ export default function ProfilePage() {
           </Form.Item>
         )}
       </Form>
-
-      <Button danger block size="large" loading={isLoggingOut} onClick={handleLogout}>
-        Выйти
-      </Button>
-    </>
+    </Flex>
   );
 }
