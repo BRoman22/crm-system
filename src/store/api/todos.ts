@@ -6,7 +6,7 @@ import type { MetaResponse, Todo, TodoInfo, TodoInfoFilters } from '../../types'
 export const todosApi = createApi({
   reducerPath: 'todosApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['todos'],
+  tagTypes: ['Todo'],
   endpoints: (build) => ({
     getTodos: build.query<MetaResponse<Todo, TodoInfo>, TodoInfoFilters>({
       query: (filter = 'all') => ({
@@ -16,10 +16,10 @@ export const todosApi = createApi({
       providesTags: (result) =>
         result
           ? [
-              ...result.data.map(({ id }) => ({ type: 'todos' as const, id })),
-              { type: 'todos' as const, id: 'LIST' },
+              ...result.data.map(({ id }) => ({ type: 'Todo' as const, id })),
+              { type: 'Todo' as const, id: 'LIST' },
             ]
-          : [{ type: 'todos' as const, id: 'LIST' }],
+          : [{ type: 'Todo' as const, id: 'LIST' }],
     }),
     createTodo: build.mutation<MetaResponse<Todo, TodoInfo>, Pick<Todo, 'title' | 'isDone'>>({
       query: (body) => ({
@@ -27,7 +27,7 @@ export const todosApi = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: [{ type: 'todos', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Todo' as const, id: 'LIST' }],
     }),
     updateTodo: build.mutation<
       MetaResponse<Todo, TodoInfo>,
@@ -39,8 +39,8 @@ export const todosApi = createApi({
         body,
       }),
       invalidatesTags: (_result, _error, { id }) => [
-        { type: 'todos', id },
-        { type: 'todos', id: 'LIST' },
+        { type: 'Todo' as const, id },
+        { type: 'Todo' as const, id: 'LIST' },
       ],
     }),
     deleteTodo: build.mutation<void, number>({
@@ -49,8 +49,8 @@ export const todosApi = createApi({
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, id) => [
-        { type: 'todos', id },
-        { type: 'todos', id: 'LIST' },
+        { type: 'Todo' as const, id },
+        { type: 'Todo' as const, id: 'LIST' },
       ],
     }),
   }),
