@@ -2,12 +2,12 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import baseQueryWithReauth from '../baseQueryWithReauth';
 import { ENDPOINTS } from '../../constans';
 import type { AuthData, Token, UserRegistration, Profile } from '../../types';
-import { logout, setCredentials, setUser } from '../slices/user';
+import { logout, setCredentials, setUser, setAuthChecking } from '../slices/user';
 
 export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['user'],
+  tagTypes: ['User'],
   endpoints: (build) => ({
     signUp: build.mutation<Profile, UserRegistration>({
       query: (body) => ({
@@ -31,8 +31,16 @@ export const userApi = createApi({
               refreshToken: data.refreshToken,
             })
           );
-        } catch (error) {
-          console.error('Login error:', error);
+
+          const { data: profile } = await dispatch(
+            userApi.endpoints.getProfile.initiate(undefined)
+          );
+
+          if (profile) {
+            dispatch(setUser(profile));
+          }
+        } catch {
+          dispatch(logout());
         }
       },
     }),
@@ -46,6 +54,7 @@ export const userApi = createApi({
           await queryFulfilled;
         } finally {
           dispatch(logout());
+          dispatch(userApi.util.resetApiState());
         }
       },
     }),
@@ -55,10 +64,27 @@ export const userApi = createApi({
         method: 'POST',
         body,
       }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        dispatch(setAuthChecking());
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setCredentials(data));
+
+          const { data: profile } = await dispatch(
+            userApi.endpoints.getProfile.initiate(undefined)
+          );
+
+          if (profile) {
+            dispatch(setUser(profile));
+          }
+        } catch {
+          dispatch(logout());
+        }
+      },
     }),
     getProfile: build.query<Profile, void>({
       query: () => ENDPOINTS.PROFILE,
-      providesTags: ['user'],
+      providesTags: ['User'],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
@@ -74,7 +100,7 @@ export const userApi = createApi({
         method: 'PUT',
         body,
       }),
-      invalidatesTags: ['user'],
+      invalidatesTags: ['User'],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;

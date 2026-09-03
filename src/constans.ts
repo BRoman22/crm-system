@@ -12,6 +12,7 @@ export const ENDPOINTS: { [key: string]: string } = {
   LOGOUT: '/user/logout',
   PROFILE: '/user/profile',
   RESET_PASSWORD: '/user/profile/reset-password',
+  USERS: '/admin/users',
 };
 
 export const ROUTES: { [key: string]: string } = {
@@ -20,6 +21,8 @@ export const ROUTES: { [key: string]: string } = {
   FORGOT_PASSWORD: '/forgot-password',
   TODO_LIST: '/',
   PROFILE: '/profile',
+  USERS: '/users',
+  USER_DETAILS: '/users/:id',
   NOT_FOUND: '/*',
 };
 
@@ -33,6 +36,11 @@ export const NAVIGATION_MENU: { key: string; label: string; path: string }[] = [
     key: '2',
     label: 'Профиль',
     path: ROUTES.PROFILE,
+  },
+  {
+    key: '3',
+    label: 'Пользователи',
+    path: ROUTES.USERS,
   },
 ];
 

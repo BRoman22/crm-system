@@ -2,12 +2,14 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { ROUTES } from './constans';
 import { useAppDispatch, useAppSelector } from './store';
 import { useEffect } from 'react';
-import { logout, setCredentials, setAuthChecking } from './store/slices/user';
+import { logout } from './store/slices/user';
 import { useRefreshMutation } from './store/api/user';
 import { Spin } from 'antd';
 import {
   TodoListPage,
   ProfilePage,
+  UsersPage,
+  UserDetailsPage,
   LoginPage,
   RegisterPage,
   MainLayout,
@@ -21,23 +23,12 @@ export default function App() {
   const [refresh] = useRefreshMutation();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      if (!refreshToken) {
-        dispatch(logout());
-        return;
-      }
-
-      dispatch(setAuthChecking());
-
-      try {
-        const result = await refresh({ refreshToken }).unwrap();
-        dispatch(setCredentials(result));
-      } catch {
-        dispatch(logout());
-      }
-    };
-
-    checkAuth();
+    if (!refreshToken) {
+      dispatch(logout());
+      return;
+    } else {
+      refresh({ refreshToken });
+    }
   }, []);
 
   if (authStatus === 'idle' || authStatus === 'loading') {
@@ -64,6 +55,11 @@ export default function App() {
       <Route element={<MainLayout redirectPath={ROUTES.LOGIN} />}>
         <Route path={ROUTES.TODO_LIST} element={<TodoListPage />} />
         <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
+        <Route path={ROUTES.USERS} element={<UsersPage redirectPath={ROUTES.TODO_LIST} />} />
+        <Route
+          path={ROUTES.USER_DETAILS}
+          element={<UserDetailsPage redirectPath={ROUTES.TODO_LIST} />}
+        />
       </Route>
 
       <Route path={ROUTES.NOT_FOUND} element={<Navigate to={ROUTES.TODO_LIST} replace />} />
